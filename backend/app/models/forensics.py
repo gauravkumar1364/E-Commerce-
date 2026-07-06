@@ -26,7 +26,7 @@ class TransactionLog(TimestampMixin, db.Model):
     currency_code = db.Column(db.String(3), nullable=True)
     gateway_reference = db.Column(db.String(100), nullable=True)
     risk_score = db.Column(db.Integer, nullable=False, default=0)
-    metadata = db.Column(db.JSON, nullable=True)
+    transaction_metadata = db.Column(db.JSON, nullable=True)
 
 
 class FraudDetection(TimestampMixin, db.Model):
@@ -40,7 +40,7 @@ class FraudDetection(TimestampMixin, db.Model):
     detection_status = db.Column(db.String(50), nullable=False, default='review')
     rule_name = db.Column(db.String(100), nullable=False)
     reasons = db.Column(db.JSON, nullable=True)
-    metadata = db.Column(db.JSON, nullable=True)
+    detection_metadata = db.Column(db.JSON, nullable=True)
 
 
 class EvidenceCollection(TimestampMixin, db.Model):

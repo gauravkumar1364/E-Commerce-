@@ -135,6 +135,6 @@ class SecurityEvent(db.Model):
     )
     event_message = db.Column(db.String(500), nullable=False)
     ip_address = db.Column(db.LargeBinary(16), nullable=True)
-    metadata = db.Column(db.JSON, nullable=True)
+    event_metadata = db.Column(db.JSON, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     resolved_at = db.Column(db.DateTime, nullable=True)

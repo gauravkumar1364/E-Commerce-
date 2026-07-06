@@ -100,6 +100,7 @@ def create_app():
 
     from app.routes import auth_bp, category_bp, commerce_bp, forensics_bp, product_bp
     from app.routes.security import security_bp
+    from app.routes.storefront import storefront_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(product_bp)
@@ -107,4 +108,5 @@ def create_app():
     app.register_blueprint(commerce_bp)
     app.register_blueprint(forensics_bp)
     app.register_blueprint(security_bp)
+    app.register_blueprint(storefront_bp)
     return app

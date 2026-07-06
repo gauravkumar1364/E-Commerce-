@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import * as api from './api.js';
+import { ShoppingBag, ShoppingCart, Users, Package, Star, ShieldCheck, Shield, Truck, RefreshCw, MessageCircle, Zap, Gift, Globe, Mail, MessageSquare, Camera, Smartphone, Shirt, Home as HomeIcon, Sparkles, Footprints, Dumbbell, Backpack, Gamepad, BookOpen, Armchair } from 'lucide-react';
 
 // ─── Colour palettes assigned per category (purely cosmetic) ─────────────────
 const CATEGORY_PALETTES = {
@@ -85,88 +86,85 @@ function StarRating({ rating, reviews }) {
     <div className="flex items-center gap-2">
       <div className="flex gap-0.5">
         {[1, 2, 3, 4, 5].map((s) => (
-          <svg key={s} className={`h-3.5 w-3.5 ${s <= stars ? 'text-amber-400' : 'text-slate-600'}`} fill="currentColor" viewBox="0 0 20 20">
+          <svg key={s} className={`h-3.5 w-3.5 ${s <= stars ? 'text-amber-400' : 'text-gray-600'}`} fill="currentColor" viewBox="0 0 20 20">
             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
           </svg>
         ))}
       </div>
-      {reviews != null && <span className="text-xs text-slate-400">{rating?.toFixed(1) || '—'} ({Number(reviews).toLocaleString('en-IN')} reviews)</span>}
+      {reviews != null && <span className="text-xs text-gray-500">{rating?.toFixed(1) || '—'} ({Number(reviews).toLocaleString('en-IN')} reviews)</span>}
     </div>
   );
 }
 
 function StatCard({ label, value, tone = 'cyan', hint }) {
   const tones = {
-    cyan:   'from-cyan-500/20 to-blue-500/10 border-cyan-400/20',
-    emerald:'from-emerald-500/20 to-teal-500/10 border-emerald-400/20',
-    amber:  'from-amber-500/20 to-orange-500/10 border-amber-400/20',
-    rose:   'from-rose-500/20 to-pink-500/10 border-rose-400/20',
-    violet: 'from-violet-500/20 to-indigo-500/10 border-violet-400/20',
-    blue:   'from-blue-500/20 to-indigo-500/10 border-blue-400/20',
+    cyan:   'bg-gray-100 border-gray-200 text-black',
+    emerald:'bg-emerald-50 border-emerald-200 text-emerald-700',
+    amber:  'bg-amber-50 border-amber-200 text-amber-700',
+    rose:   'bg-rose-50 border-rose-200 text-rose-700',
+    violet: 'bg-violet-50 border-violet-200 text-violet-700',
+    blue:   'bg-gray-100 border-gray-200 text-black',
   };
   return (
-    <article className={`rounded-3xl border bg-gradient-to-br p-5 shadow-lg ${tones[tone] || tones.cyan}`}>
-      <p className="text-xs uppercase tracking-[0.2em] text-slate-300">{label}</p>
+    <article className={`rounded-3xl border p-5 shadow-sm ${tones[tone] || tones.cyan}`}>
+      <p className="text-xs uppercase tracking-[0.2em] font-bold opacity-80">{label}</p>
       <div className="mt-4 flex items-end justify-between gap-4">
-        <strong className="text-3xl font-black text-white md:text-4xl">{value ?? '—'}</strong>
-        <span className="text-xs text-slate-300">{hint}</span>
+        <strong className="text-3xl font-black md:text-4xl">{value ?? '—'}</strong>
+        <span className="text-xs font-medium opacity-80">{hint}</span>
       </div>
     </article>
   );
 }
 
 function ProductCard({ product, onAdd, onOpen, onWishlist, wishlistItemId }) {
-  const palette = paletteFor(product);
   const primaryImage = product.images?.find((i) => i.is_primary) || product.images?.[0];
   const categoryName = product.categories?.[0]?.category_name || 'Product';
   const isWishlisted = wishlistItemId != null;
 
   return (
-    <article className="group overflow-hidden rounded-[1.75rem] border border-white/10 bg-slate-950/75 shadow-[0_20px_70px_rgba(2,6,23,0.35)] transition-transform duration-300 hover:-translate-y-1">
+    <article className="group overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-md hover:border-slate-300">
       {/* Visual */}
-      <div className={`relative h-52 bg-gradient-to-br ${palette[0]} p-5 overflow-hidden`}>
-        <div className={`absolute inset-0 bg-gradient-to-br ${palette[1]} opacity-70`} />
+      <div className="relative h-52 bg-gray-100 p-5 overflow-hidden">
         {primaryImage && (
           <img src={primaryImage.image_url} alt={primaryImage.alt_text || product.product_name}
-            className="absolute inset-0 h-full w-full object-cover opacity-40 mix-blend-overlay"
+            className="absolute inset-0 h-full w-full object-cover mix-blend-multiply transition duration-500 group-hover:scale-105"
             onError={(e) => { e.currentTarget.style.display = 'none'; }} />
         )}
         <div className="relative flex h-full flex-col justify-between">
           <div className="flex items-start justify-between">
-            <span className="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.15em] text-white backdrop-blur">
+            <span className="inline-flex rounded-full bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-widest text-slate-800 shadow-sm backdrop-blur">
               {product.stock_quantity > 0 ? (product.stock_quantity < 20 ? 'Low Stock' : 'In Stock') : 'Out of Stock'}
             </span>
             <button type="button" onClick={() => onWishlist(product, wishlistItemId)}
               title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
-              className="rounded-full bg-slate-950/50 p-2 backdrop-blur transition hover:bg-rose-500/20">
-              <svg className={`h-4 w-4 ${isWishlisted ? 'fill-rose-400 text-rose-400' : 'text-white/70'}`}
+              className="rounded-full bg-white/90 p-2 shadow-sm backdrop-blur transition hover:bg-rose-50">
+              <svg className={`h-4 w-4 ${isWishlisted ? 'fill-rose-500 text-rose-500' : 'text-gray-500'}`}
                 fill={isWishlisted ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </button>
-          </div>
-          <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-white/60">{categoryName}</p>
-            <h3 className="mt-1 text-xl font-black text-white leading-snug">{product.product_name}</h3>
           </div>
         </div>
       </div>
 
       {/* Details */}
       <div className="space-y-3 p-5">
-        {product.rating != null && <StarRating rating={product.rating} reviews={product.reviews} />}
-        <p className="line-clamp-2 text-sm leading-6 text-slate-300">{product.description || 'Premium quality product.'}</p>
-        <div className="flex items-baseline gap-2">
-          <span className="text-2xl font-black text-white">{formatINR(product.price)}</span>
-          <span className="text-xs text-slate-500">{product.currency_code}</span>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-gray-500">{categoryName}</p>
+          <h3 className="mt-1 text-lg font-black text-gray-900 leading-snug line-clamp-1">{product.product_name}</h3>
         </div>
-        <div className="flex gap-2 pt-1">
+        {product.rating != null && <StarRating rating={product.rating} reviews={product.reviews} />}
+        <p className="line-clamp-2 text-sm leading-6 text-gray-500">{product.description || 'Premium quality product.'}</p>
+        <div className="flex items-baseline gap-1">
+          <span className="text-2xl font-black text-gray-900">{formatINR(product.price)}</span>
+        </div>
+        <div className="flex gap-2 pt-2">
           <button type="button" onClick={() => onOpen(product)}
-            className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">
-            View Details
+            className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm font-bold text-gray-700 transition hover:bg-gray-100">
+            Details
           </button>
           <button type="button" onClick={() => onAdd(product)} disabled={product.stock_quantity === 0}
-            className="flex-1 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-3 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-950/40 transition hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed">
+            className="flex-1 rounded-xl bg-black px-3 py-2.5 text-sm font-bold text-gray-900 shadow-sm transition hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed">
             {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
           </button>
         </div>
@@ -182,7 +180,7 @@ function ProductGrid({ fetchFn, deps, onAdd, onOpen, onWishlist, wishlistItems, 
   if (loading) return <Spinner />;
   if (error) return <ErrorBanner message={error} />;
   if (!products.length) return (
-    <div className="rounded-2xl border border-dashed border-white/15 bg-white/5 px-6 py-12 text-center text-slate-400">
+    <div className="rounded-3xl border border-dashed border-slate-300 bg-gray-50 px-6 py-12 text-center text-gray-500">
       {emptyText || 'No products available.'}
     </div>
   );
@@ -198,10 +196,10 @@ function ProductGrid({ fetchFn, deps, onAdd, onOpen, onWishlist, wishlistItems, 
 
 function EmptyState({ title, text, action }) {
   return (
-    <div className="grid place-items-center rounded-[1.75rem] border border-dashed border-white/15 bg-white/5 px-6 py-14 text-center">
+    <div className="grid place-items-center rounded-3xl border border-dashed border-slate-300 bg-gray-50 px-6 py-14 text-center">
       <div className="max-w-md space-y-3">
-        <h3 className="text-2xl font-black text-white">{title}</h3>
-        <p className="text-sm leading-7 text-slate-300">{text}</p>
+        <h3 className="text-2xl font-black text-gray-900">{title}</h3>
+        <p className="text-sm leading-7 text-gray-600">{text}</p>
         <div className="pt-2">{action}</div>
       </div>
     </div>
@@ -211,20 +209,20 @@ function EmptyState({ title, text, action }) {
 function Input({ label, name, type = 'text', value, onChange, placeholder, required }) {
   const fieldProps = value !== undefined ? { value, onChange: onChange || (() => {}) } : { defaultValue: '' };
   return (
-    <label className="grid gap-2 text-sm text-slate-200">
-      <span className="text-xs uppercase tracking-[0.2em] text-slate-400">{label}</span>
+    <label className="grid gap-2 text-sm font-medium text-gray-700">
+      <span className="text-xs font-bold uppercase tracking-widest text-gray-500">{label}</span>
       <input name={name} type={type} placeholder={placeholder} required={required} {...fieldProps}
-        className="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400/40 focus:ring-2 focus:ring-cyan-400/20" />
+        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm" />
     </label>
   );
 }
 
 function Select({ label, name, value, onChange, children }) {
   return (
-    <label className="grid gap-2 text-sm text-slate-200">
-      <span className="text-xs uppercase tracking-[0.2em] text-slate-400">{label}</span>
+    <label className="grid gap-2 text-sm font-medium text-gray-700">
+      <span className="text-xs font-bold uppercase tracking-widest text-gray-500">{label}</span>
       <select name={name} value={value} onChange={onChange}
-        className="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white outline-none transition focus:border-cyan-400/40 focus:ring-2 focus:ring-cyan-400/20">
+        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm">
         {children}
       </select>
     </label>
@@ -233,8 +231,8 @@ function Select({ label, name, value, onChange, children }) {
 
 function Row({ label, value, strong = false }) {
   return (
-    <div className={`flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 ${strong ? 'text-white' : 'text-slate-300'}`}>
-      <span>{label}</span>
+    <div className={`flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 ${strong ? 'text-gray-900' : 'text-gray-600'}`}>
+      <span className="font-medium">{label}</span>
       <span className={strong ? 'font-black' : 'font-semibold'}>{value}</span>
     </div>
   );
@@ -255,13 +253,13 @@ function ChartCard({ title, subtitle, labels, values, stroke = '#38bdf8', fill =
   const W = 900, H = 300, P = 32;
   const path = linePath(values, W, H, P);
   return (
-    <section className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-5 shadow-[0_20px_70px_rgba(2,6,23,0.35)]">
+    <section className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
       <div className="mb-4 flex items-end justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">{subtitle}</p>
-          <h3 className="mt-2 text-xl font-black text-white">{title}</h3>
+          <h3 className="mt-2 text-xl font-black text-gray-900">{title}</h3>
         </div>
-        <span className="text-sm text-slate-400">Last 6 months</span>
+        <span className="text-sm text-gray-500">Last 6 months</span>
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} className="h-72 w-full overflow-visible" role="img" aria-label={title}>
         {[0, 0.25, 0.5, 0.75, 1].map((t) => {
@@ -576,47 +574,47 @@ export default function App() {
 
     // ══ ORDERS ══
     if (route.path === '/orders') {
-      if (!isLoggedIn) return <EmptyState title="Sign In Required" text="Please sign in to view your orders." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white">Sign In</button>} />;
+      if (!isLoggedIn) return <EmptyState title="Sign In Required" text="Please sign in to view your orders." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Sign In</button>} />;
       return <OrdersPage />;
     }
 
     // ══ ADMIN ══
     if (route.path === '/admin') {
-      if (authUser?.role !== 'Admin') return <EmptyState title="Access Restricted" text="Admin credentials required." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white">Sign In</button>} />;
+      if (authUser?.role !== 'Admin') return <EmptyState title="Access Restricted" text="Admin credentials required." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Sign In</button>} />;
       return <AdminPage />;
     }
 
     // ══ SELLER ══
     if (route.path === '/seller') {
-      if (!['Admin', 'Seller'].includes(authUser?.role)) return <EmptyState title="Access Restricted" text="Seller credentials required." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white">Sign In as Seller</button>} />;
+      if (!['Admin', 'Seller'].includes(authUser?.role)) return <EmptyState title="Access Restricted" text="Seller credentials required." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Sign In as Seller</button>} />;
       return <SellerPage />;
     }
 
     // ══ WISHLIST ══
     if (route.path === '/wishlist') {
-      if (!isLoggedIn) return <EmptyState title="Sign In Required" text="Please sign in to view your Wishlist." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white">Sign In</button>} />;
+      if (!isLoggedIn) return <EmptyState title="Sign In Required" text="Please sign in to view your Wishlist." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Sign In</button>} />;
       return <WishlistPage wishlistItems={wishlistItems} onAdd={handleAddToCart} onOpen={goToProduct} onWishlist={handleWishlist} />;
     }
 
-    return <EmptyState title="Page Not Found" text="This page doesn't exist." action={<button onClick={() => navigate('/')} className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white">Go Home</button>} />;
+    return <EmptyState title="Page Not Found" text="This page doesn't exist." action={<button onClick={() => navigate('/')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Go Home</button>} />;
   }
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.13),_transparent_32%),linear-gradient(180deg,_#0f172a_0%,_#020617_100%)] text-white">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       <div className="mx-auto max-w-[1600px] px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
 
         {/* Navbar */}
-        <header className="sticky top-4 z-40 mb-6 rounded-[1.75rem] border border-white/10 bg-slate-950/70 px-4 py-3 shadow-[0_20px_60px_rgba(2,6,23,0.35)] backdrop-blur-xl sm:px-5">
+        <header className="sticky top-0 z-40 mb-6 border-b border-gray-200 bg-white px-4 py-4 shadow-sm sm:px-5 md:top-4 md:rounded-2xl md:border">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center justify-between gap-4">
               <button onClick={() => navigate('/')} className="flex items-center gap-3 text-left">
-                <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-lg font-black shadow-lg shadow-cyan-950/40">S</span>
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-black text-white shadow-md"><ShoppingBag className="w-5 h-5" /></span>
                 <div>
-                  <p className="text-sm font-black tracking-wide text-white">ShopZen</p>
-                  <p className="text-xs text-slate-400">Premium Shopping</p>
+                  <p className="text-base font-black tracking-tight text-gray-900">ShopZen</p>
+                  <p className="text-xs font-medium text-gray-500">Premium Shopping</p>
                 </div>
               </button>
-              <button className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white lg:hidden" onClick={() => setMobileMenuOpen((v) => !v)}>
+              <button className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 text-sm text-gray-700 lg:hidden" onClick={() => setMobileMenuOpen((v) => !v)}>
                 {mobileMenuOpen ? '✕' : '☰'}
               </button>
             </div>
@@ -625,26 +623,26 @@ export default function App() {
                 const isActive = route.path === item.path || (item.path === '/products' && route.path === '/product');
                 return (
                   <button key={item.path} onClick={() => navigate(item.path)}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold transition ${isActive ? 'bg-white text-slate-950' : 'border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10'}`}>
+                    className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${isActive ? 'bg-black text-white' : 'text-gray-600 hover:bg-gray-100 hover:text-black'}`}>
                     {item.label}
                   </button>
                 );
               })}
-              <button onClick={() => navigate('/cart')} className="relative rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-white/10 transition">
-                🛒 Cart
+              <button onClick={() => navigate('/cart')} className="relative rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition">
+                <ShoppingCart className="w-4 h-4 inline-block mr-1" /> Cart
                 {cartCount > 0 && (
-                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500 text-[10px] font-black text-white">{cartCount}</span>
+                  <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-black text-white shadow-sm">{cartCount}</span>
                 )}
               </button>
               {authUser ? (
-                <button onClick={() => navigate('/profile')} className="flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-400/15 transition">
-                  <span className="h-5 w-5 rounded-full bg-cyan-500 grid place-items-center text-[10px] font-black text-white">
+                <button onClick={() => navigate('/profile')} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-semibold text-black hover:bg-blue-100 transition">
+                  <span className="h-5 w-5 rounded-full bg-black grid place-items-center text-[10px] font-black text-white">
                     {(authUser.first_name || 'U').charAt(0).toUpperCase()}
                   </span>
                   {authUser.first_name}
                 </button>
               ) : (
-                <button onClick={() => navigate('/login')} className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-400/15 transition">
+                <button onClick={() => navigate('/login')} className="rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-semibold text-black hover:bg-blue-100 transition">
                   Sign In
                 </button>
               )}
@@ -654,10 +652,10 @@ export default function App() {
 
         {/* Toast */}
         {notice.msg && (
-          <div className={`mb-6 rounded-2xl border px-4 py-3 text-sm shadow-lg flex items-center gap-2 ${
-            notice.type === 'error' ? 'border-rose-400/20 bg-rose-500/10 text-rose-100' :
-            notice.type === 'info'  ? 'border-cyan-400/20 bg-cyan-500/10 text-cyan-100' :
-            'border-emerald-400/20 bg-emerald-500/10 text-emerald-100'
+          <div className={`mb-6 rounded-xl border px-4 py-3 text-sm font-medium shadow-sm flex items-center gap-2 ${
+            notice.type === 'error' ? 'border-rose-200 bg-rose-50 text-rose-700' :
+            notice.type === 'info'  ? 'border-gray-200 bg-gray-100 text-black' :
+            'border-emerald-200 bg-emerald-50 text-emerald-700'
           }`}>
             {notice.msg}
           </div>
@@ -666,52 +664,52 @@ export default function App() {
         {renderPage()}
 
         {/* Footer */}
-        <footer className="mt-16 rounded-[2rem] border border-white/10 bg-slate-950/70 px-6 py-10 backdrop-blur-xl">
+        <footer className="mt-16 rounded-3xl border border-gray-200 bg-white px-6 py-10 shadow-sm">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-4">
               <button onClick={() => navigate('/')} className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-base font-black shadow-lg shadow-cyan-950/40">S</span>
-                <span className="font-black text-white text-lg">ShopZen</span>
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-black text-base font-black text-gray-900 shadow-md shadow-gray-400/20">S</span>
+                <span className="font-black text-gray-900 text-lg">ShopZen</span>
               </button>
-              <p className="text-sm text-slate-400 leading-6">Your one-stop destination for premium products at unbeatable prices.</p>
-              <div className="flex gap-3">{['📘','🐦','📷','▶️'].map((icon, i) => (
-                <button key={i} className="h-9 w-9 rounded-xl border border-white/10 bg-white/5 grid place-items-center text-sm hover:bg-white/10 transition">{icon}</button>
+              <p className="text-sm text-gray-600 leading-6">Your one-stop destination for premium products at unbeatable prices.</p>
+              <div className="flex gap-3">{[<Globe key={0} className="w-4 h-4"/>,<Mail key={1} className="w-4 h-4"/>,<Camera key={2} className="w-4 h-4"/>,<MessageSquare key={3} className="w-4 h-4"/>].map((icon, i) => (
+                <button key={i} className="h-9 w-9 rounded-xl border border-gray-200 bg-gray-50 grid place-items-center text-sm hover:bg-gray-100 transition text-gray-600">{icon}</button>
               ))}</div>
             </div>
             <div>
-              <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4">Quick Links</p>
+              <p className="text-xs uppercase tracking-widest text-gray-500 font-bold mb-4">Quick Links</p>
               <ul className="space-y-2">
                 {[['Home','/'],['Shop','/products'],['Categories','/categories'],['Deals','/deals'],['My Orders','/orders']].map(([l, p]) => (
-                  <li key={l}><button onClick={() => navigate(p)} className="text-sm text-slate-300 hover:text-white transition">{l}</button></li>
+                  <li key={l}><button onClick={() => navigate(p)} className="text-sm font-medium text-gray-600 hover:text-black transition">{l}</button></li>
                 ))}
               </ul>
             </div>
             <div>
-              <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-4">Customer Care</p>
-              <ul className="space-y-2 text-sm text-slate-300">
+              <p className="text-xs uppercase tracking-widest text-gray-500 font-bold mb-4">Customer Care</p>
+              <ul className="space-y-2 text-sm font-medium text-gray-600">
                 {['Help Center','Track Your Order','Return Policy','Shipping Policy','Privacy Policy','Terms & Conditions'].map((item) => (
-                  <li key={item}><button className="hover:text-white transition">{item}</button></li>
+                  <li key={item}><button className="hover:text-black transition">{item}</button></li>
                 ))}
               </ul>
             </div>
             <div className="space-y-4">
-              <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold">Contact Us</p>
-              <div className="space-y-2 text-sm text-slate-300">
+              <p className="text-xs uppercase tracking-widest text-gray-500 font-bold">Contact Us</p>
+              <div className="space-y-2 text-sm font-medium text-gray-600">
                 <p>📧 support@shopzen.in</p>
                 <p>📞 1800-123-4567 (Toll Free)</p>
                 <p>🕐 Mon–Sat: 9 AM – 8 PM IST</p>
               </div>
               <div className="space-y-2 pt-2">
-                {[['🔒','100% Secure Payments'],['↩️','10-Day Easy Returns'],['🚚','Free Delivery on ₹999+']].map(([ic, t]) => (
-                  <div key={t} className="flex items-center gap-2 text-xs text-slate-300"><span>{ic}</span>{t}</div>
+                {[[<Shield key={0} className="w-3 h-3"/>,'100% Secure Payments'],[<RefreshCw key={1} className="w-3 h-3"/>,'10-Day Easy Returns'],[<Truck key={2} className="w-3 h-3"/>,'Free Delivery on ₹999+']].map(([ic, t], i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs font-semibold text-gray-600"><span>{ic}</span>{t}</div>
                 ))}
               </div>
             </div>
           </div>
-          <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
-            <p className="text-xs text-slate-500">© 2025 ShopZen. All rights reserved. Made with ❤️ in India.</p>
-            <div className="flex gap-4 text-xs text-slate-500">
-              {['Privacy','Terms','Sitemap'].map((t) => <button key={t} className="hover:text-slate-300 transition">{t}</button>)}
+          <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-gray-100 pt-6 sm:flex-row">
+            <p className="text-xs font-medium text-gray-500">© 2025 ShopZen. All rights reserved. Made with ❤️ in India.</p>
+            <div className="flex gap-4 text-xs font-medium text-gray-500">
+              {['Privacy','Terms','Sitemap'].map((t) => <button key={t} className="hover:text-gray-900 transition">{t}</button>)}
             </div>
           </div>
         </footer>
@@ -726,86 +724,95 @@ function HomePage({ onAdd, onOpen, onWishlist, wishlistItems }) {
   const { data: stats, loading: statsLoading } = useAsync(api.getStats, []);
 
   const trustMetrics = statsLoading
-    ? [{ label: '—', sub: 'Happy Customers', icon: '😊' }, { label: '—', sub: 'Products Available', icon: '📦' }, { label: '4.8 / 5', sub: 'Customer Rating', icon: '⭐' }, { label: '100%', sub: 'Secure Shopping', icon: '🛡️' }]
+    ? [{ label: '—', sub: 'Happy Customers', icon: <Users className="w-6 h-6 mx-auto"/> }, { label: '—', sub: 'Products Available', icon: <Package className="w-6 h-6 mx-auto"/> }, { label: '4.8 / 5', sub: 'Customer Rating', icon: <Star className="w-6 h-6 mx-auto"/> }, { label: '100%', sub: 'Secure Shopping', icon: <ShieldCheck className="w-6 h-6 mx-auto"/> }]
     : [
-        { label: stats?.total_customers > 0 ? `${stats.total_customers.toLocaleString('en-IN')}+` : 'Growing!', sub: 'Happy Customers', icon: '😊' },
-        { label: stats?.total_products > 0 ? `${stats.total_products}+` : 'Launching Soon', sub: 'Products Available', icon: '📦' },
-        { label: '4.8 / 5', sub: 'Customer Rating', icon: '⭐' },
-        { label: '100%', sub: 'Secure Shopping', icon: '🛡️' },
+        { label: stats?.total_customers > 0 ? `${stats.total_customers.toLocaleString('en-IN')}+` : 'Growing!', sub: 'Happy Customers', icon: <Users className="w-6 h-6 mx-auto"/> },
+        { label: stats?.total_products > 0 ? `${stats.total_products}+` : 'Launching Soon', sub: 'Products Available', icon: <Package className="w-6 h-6 mx-auto"/> },
+        { label: '4.8 / 5', sub: 'Customer Rating', icon: <Star className="w-6 h-6 mx-auto"/> },
+        { label: '100%', sub: 'Secure Shopping', icon: <ShieldCheck className="w-6 h-6 mx-auto"/> },
       ];
 
   return (
     <div className="space-y-10">
 
       {/* Hero */}
-      <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/70 shadow-[0_30px_100px_rgba(2,6,23,0.45)] ring-1 ring-white/5 backdrop-blur-xl">
+      <section className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
         <div className="grid gap-8 p-6 md:p-12 lg:grid-cols-[1.3fr_0.7fr] lg:items-center">
           <div className="space-y-6">
-            <span className="inline-flex rounded-full border border-cyan-400/30 bg-cyan-400/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-cyan-200">
+            <span className="inline-flex rounded-full border border-gray-200 bg-gray-100 px-4 py-1 text-xs font-bold uppercase tracking-widest text-black">
               🔥 Festival Sale — Up to 50% Off
             </span>
-            <h1 className="max-w-3xl text-4xl font-black tracking-tight text-white md:text-6xl leading-tight">
+            <h1 className="max-w-3xl text-4xl font-black tracking-tight text-gray-900 md:text-6xl leading-tight">
               Discover Premium Products at{' '}
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Unbeatable Prices</span>
+              <span className="text-black">Unbeatable Prices</span>
             </h1>
-            <p className="max-w-2xl text-base leading-7 text-slate-300 md:text-lg">
+            <p className="max-w-2xl text-base leading-7 text-gray-600 md:text-lg">
               Shop thousands of high-quality electronics, fashion, home essentials, and accessories with secure payments and fast nationwide delivery.
             </p>
             <div className="flex flex-wrap gap-3">
-              <button onClick={() => navigate('/products')} className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-cyan-950/40 transition hover:brightness-110">
+              <button onClick={() => navigate('/products')} className="rounded-xl bg-black px-6 py-3 text-sm font-bold text-white shadow-md shadow-gray-400/20 transition hover:bg-gray-900">
                 Shop Now
               </button>
-              <button onClick={() => navigate('/categories')} className="rounded-2xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10">
+              <button onClick={() => navigate('/categories')} className="rounded-xl border border-gray-200 bg-gray-50 px-6 py-3 text-sm font-bold text-gray-700 transition hover:bg-gray-100">
                 Explore Categories
               </button>
             </div>
             <div className="flex flex-wrap gap-3 pt-2">
-              {[['🔒','Secure Payments'],['🚚','Fast Delivery'],['↩️','Easy Returns'],['💬','24/7 Support']].map(([ic, lb]) => (
-                <div key={lb} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+              {[[<Shield key={0} className="w-4 h-4"/>,'Secure Payments'],[<Truck key={1} className="w-4 h-4"/>,'Fast Delivery'],[<RefreshCw key={2} className="w-4 h-4"/>,'Easy Returns'],[<MessageCircle key={3} className="w-4 h-4"/>,'24/7 Support']].map(([ic, lb], i) => (
+                <div key={i} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2">
                   <span className="text-base">{ic}</span>
-                  <span className="text-xs font-semibold text-slate-200">{lb}</span>
+                  <span className="text-xs font-semibold text-gray-600">{lb}</span>
                 </div>
               ))}
             </div>
           </div>
-          <div className="grid gap-3 rounded-[1.75rem] border border-white/10 bg-white/5 p-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-            {trustMetrics.map((m) => (
-              <div key={m.sub} className="rounded-2xl border border-white/10 bg-slate-950/50 p-4 text-center">
-                <span className="text-2xl">{m.icon}</span>
-                <p className="mt-1 text-xl font-black text-white">{m.label}</p>
-                <p className="text-xs text-slate-400">{m.sub}</p>
-              </div>
-            ))}
+          <div className="relative hidden lg:block h-[420px] w-full rounded-3xl overflow-hidden shadow-lg border border-gray-100 bg-gray-50">
+             <img src="https://images.unsplash.com/photo-1491933382434-500287f9b54b?q=80&w=1600&auto=format&fit=crop" alt="Premium Tech Products" className="absolute inset-0 w-full h-full object-cover" />
           </div>
         </div>
+      </section>
+
+      {/* Trust Metrics Row */}
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {trustMetrics.map((m) => (
+          <div key={m.sub} className="flex items-center gap-5 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gray-100 text-gray-900">
+               {m.icon}
+            </div>
+            <div>
+              <p className="text-xl font-black text-gray-900">{m.label}</p>
+              <p className="text-sm font-medium text-gray-500">{m.sub}</p>
+            </div>
+          </div>
+        ))}
       </section>
 
       {/* Promo Banners */}
       <section className="grid gap-4 sm:grid-cols-3">
         {[
-          { title: 'Mega Sale', sub: 'Up to 50% off Electronics', color: 'from-cyan-500/20 to-blue-600/10 border-cyan-500/20', icon: '⚡' },
-          { title: 'Free Shipping', sub: 'On orders above ₹999', color: 'from-emerald-500/20 to-teal-600/10 border-emerald-500/20', icon: '🚚' },
-          { title: 'Buy 2 Get 1 Free', sub: 'On all Fashion & Accessories', color: 'from-fuchsia-500/20 to-pink-600/10 border-fuchsia-500/20', icon: '🎁' },
+          { title: 'Mega Sale', sub: 'Up to 50% off Electronics', color: 'bg-gray-100 border-gray-200 text-black', icon: <Zap className="w-6 h-6"/> },
+          { title: 'Free Shipping', sub: 'On orders above ₹999', color: 'bg-emerald-50 border-emerald-200 text-emerald-700', icon: <Truck className="w-6 h-6"/> },
+          { title: 'Buy 2 Get 1 Free', sub: 'On all Fashion & Accessories', color: 'bg-fuchsia-50 border-fuchsia-200 text-fuchsia-700', icon: <Gift className="w-6 h-6"/> },
         ].map((b) => (
           <button key={b.title} onClick={() => navigate('/deals')}
-            className={`flex items-center gap-4 rounded-[1.5rem] border bg-gradient-to-br p-5 text-left transition hover:brightness-110 ${b.color}`}>
+            className={`flex items-center gap-4 rounded-3xl border p-5 text-left transition hover:brightness-95 ${b.color}`}>
             <span className="text-3xl">{b.icon}</span>
             <div>
-              <p className="font-black text-white">{b.title}</p>
-              <p className="text-sm text-slate-300">{b.sub}</p>
+              <p className="font-black text-gray-900">{b.title}</p>
+              <p className="text-sm font-medium">{b.sub}</p>
             </div>
           </button>
         ))}
       </section>
 
       {/* Featured Products */}
-      <section className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.35)]">
+      <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex items-end justify-between gap-4 mb-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">Handpicked for You</p>
-            <h2 className="mt-2 text-2xl font-black text-white">Featured Products</h2>
+            <p className="text-xs font-bold uppercase tracking-widest text-black">Handpicked for You</p>
+            <h2 className="mt-2 text-2xl font-black text-gray-900">Featured Products</h2>
           </div>
-          <button className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10 transition" onClick={() => navigate('/products')}>View All →</button>
+          <button className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition" onClick={() => navigate('/products')}>View All →</button>
         </div>
         <ProductGrid fetchFn={api.getFeatured} deps={[]} onAdd={onAdd} onOpen={onOpen} onWishlist={onWishlist} wishlistItems={wishlistItems} emptyText="No featured products yet. Check back soon!" />
       </section>
@@ -814,25 +821,25 @@ function HomePage({ onAdd, onOpen, onWishlist, wishlistItems }) {
       <CategoryGridSection />
 
       {/* Trending */}
-      <section className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.35)]">
+      <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex items-end justify-between gap-4 mb-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">Most Loved</p>
-            <h2 className="mt-2 text-2xl font-black text-white">Trending Now 🔥</h2>
+            <p className="text-xs font-bold uppercase tracking-widest text-black">Most Loved</p>
+            <h2 className="mt-2 text-2xl font-black text-gray-900">Trending Now 🔥</h2>
           </div>
-          <button className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10 transition" onClick={() => navigate('/products')}>View All →</button>
+          <button className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition" onClick={() => navigate('/products')}>View All →</button>
         </div>
         <ProductGrid fetchFn={api.getTrending} deps={[]} onAdd={onAdd} onOpen={onOpen} onWishlist={onWishlist} wishlistItems={wishlistItems} emptyText="No trending products yet." />
       </section>
 
       {/* Newsletter */}
-      <section className="overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/10 to-blue-600/10 p-8 text-center">
-        <h2 className="text-2xl font-black text-white">Get Exclusive Deals in Your Inbox</h2>
-        <p className="mt-2 text-slate-300">Subscribe and be the first to know about sales, new arrivals, and more.</p>
+      <section className="overflow-hidden rounded-3xl border border-gray-200 bg-gray-100 p-8 text-center">
+        <h2 className="text-2xl font-black text-gray-900">Get Exclusive Deals in Your Inbox</h2>
+        <p className="mt-2 text-gray-600 font-medium">Subscribe and be the first to know about sales, new arrivals, and more.</p>
         <form className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center" onSubmit={(e) => e.preventDefault()}>
           <input type="email" placeholder="Enter your email address" required
-            className="w-full max-w-sm rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white placeholder:text-slate-500 outline-none focus:border-cyan-400/40 focus:ring-2 focus:ring-cyan-400/20" />
-          <button className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-cyan-950/40 transition hover:brightness-110">Subscribe</button>
+            className="w-full max-w-sm rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm" />
+          <button className="rounded-xl bg-black px-6 py-3 text-sm font-bold text-gray-900 shadow-md shadow-gray-400/20 transition hover:bg-gray-900">Subscribe</button>
         </form>
       </section>
     </div>
@@ -843,22 +850,22 @@ function CategoryGridSection() {
   const { data, loading } = useAsync(api.getCategories, []);
   const cats = data?.categories || [];
 
-  const ICONS = { electronics:'📱', fashion:'👗', 'home-kitchen':'🏠', beauty:'💄', footwear:'👟', sports:'🏋️', accessories:'🎒', gaming:'🎮', books:'📚', furniture:'🪑' };
+  const ICONS = { electronics:<Smartphone/>, fashion:<Shirt/>, 'home-kitchen':<HomeIcon/>, beauty:<Sparkles/>, footwear:<Footprints/>, sports:<Dumbbell/>, accessories:<Backpack/>, gaming:<Gamepad/>, books:<BookOpen/>, furniture:<Armchair/> };
 
   return (
-    <section className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.35)]">
+    <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
       <div className="mb-6">
         <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">Browse by Interest</p>
-        <h2 className="mt-2 text-2xl font-black text-white">Shop by Category</h2>
+        <h2 className="mt-2 text-2xl font-black text-gray-900">Shop by Category</h2>
       </div>
       {loading ? <Spinner /> : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
           {cats.map((c) => (
             <button key={c.category_id}
               onClick={() => { navigate('/products'); window.dispatchEvent(new CustomEvent('setCategory', { detail: c.slug })); }}
-              className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-center transition hover:bg-cyan-500/10 hover:border-cyan-500/30">
+              className="flex flex-col items-center gap-2 rounded-2xl border border-gray-200 bg-gray-50 p-4 text-center transition hover:bg-cyan-500/10 hover:border-cyan-500/30">
               <span className="text-3xl">{ICONS[c.slug] || '🛍️'}</span>
-              <span className="text-xs font-semibold text-slate-200">{c.category_name}</span>
+              <span className="text-xs font-semibold text-gray-700">{c.category_name}</span>
             </button>
           ))}
         </div>
@@ -885,11 +892,11 @@ function ShopPage({ search, setSearch, category, setCategory, sort, setSort, sor
 
   return (
     <div className="space-y-6">
-      <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6">
-        <h1 className="text-2xl font-black text-white">Shop All Products</h1>
-        <p className="mt-1 text-sm text-slate-400">Discover our full range of premium products across all categories.</p>
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <h1 className="text-2xl font-black text-gray-900">Shop All Products</h1>
+        <p className="mt-1 text-sm text-gray-500">Discover our full range of premium products across all categories.</p>
       </div>
-      <div className="grid gap-4 rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-5 lg:grid-cols-[1.2fr_auto_auto_auto]">
+      <div className="grid gap-4 rounded-3xl border border-gray-200 bg-white p-5 lg:grid-cols-[1.2fr_auto_auto_auto]">
         <Input value={search} onChange={(e) => setSearch(e.target.value)} name="search" label="Search Products" placeholder="Search by name, description…" />
         <Select value={category} onChange={(e) => setCategory(e.target.value)} name="category" label="Category">
           <option value="">All Categories</option>
@@ -907,7 +914,7 @@ function ShopPage({ search, setSearch, category, setCategory, sort, setSort, sor
         </Select>
       </div>
       {loading ? <Spinner /> : error ? <ErrorBanner message={error} /> : !products.length ? (
-        <EmptyState title="No products found" text="Try adjusting your search or category filter." action={<button onClick={() => { setSearch(''); setCategory(''); }} className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white">Clear Filters</button>} />
+        <EmptyState title="No products found" text="Try adjusting your search or category filter." action={<button onClick={() => { setSearch(''); setCategory(''); }} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Clear Filters</button>} />
       ) : (
         <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {products.map((p) => {
@@ -923,27 +930,27 @@ function ShopPage({ search, setSearch, category, setCategory, sort, setSort, sor
 function CategoriesPage({ setShopCategory }) {
   const { data, loading } = useAsync(api.getCategories, []);
   const cats = data?.categories || [];
-  const ICONS = { electronics:'📱', fashion:'👗', 'home-kitchen':'🏠', beauty:'💄', footwear:'👟', sports:'🏋️', accessories:'🎒', gaming:'🎮', books:'📚', furniture:'🪑' };
+  const ICONS = { electronics:<Smartphone/>, fashion:<Shirt/>, 'home-kitchen':<HomeIcon/>, beauty:<Sparkles/>, footwear:<Footprints/>, sports:<Dumbbell/>, accessories:<Backpack/>, gaming:<Gamepad/>, books:<BookOpen/>, furniture:<Armchair/> };
 
   return (
     <div className="space-y-6">
-      <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6">
-        <h1 className="text-2xl font-black text-white">Shop by Category</h1>
-        <p className="mt-1 text-sm text-slate-400">Find exactly what you need from our wide selection.</p>
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <h1 className="text-2xl font-black text-gray-900">Shop by Category</h1>
+        <p className="mt-1 text-sm text-gray-500">Find exactly what you need from our wide selection.</p>
       </div>
       {loading ? <Spinner /> : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cats.map((c) => (
             <button key={c.category_id} onClick={() => { setShopCategory(c.slug); navigate('/products'); }}
-              className="flex items-center gap-4 rounded-[1.5rem] border border-white/10 bg-slate-950/75 p-5 text-left transition hover:border-cyan-400/30 hover:bg-cyan-500/10 group">
+              className="flex items-center gap-4 rounded-[1.5rem] border border-gray-200 bg-white p-5 text-left transition hover:border-cyan-400/30 hover:bg-cyan-500/10 group">
               <span className="text-4xl">{ICONS[c.slug] || '🛍️'}</span>
               <div>
-                <p className="font-black text-white group-hover:text-cyan-300 transition">{c.category_name}</p>
-                {c.description && <p className="text-sm text-slate-400 mt-1">{c.description}</p>}
+                <p className="font-black text-gray-900 group-hover:text-cyan-300 transition">{c.category_name}</p>
+                {c.description && <p className="text-sm text-gray-500 mt-1">{c.description}</p>}
               </div>
             </button>
           ))}
-          {!cats.length && <p className="text-slate-400 col-span-full text-center py-12">No categories yet.</p>}
+          {!cats.length && <p className="text-gray-500 col-span-full text-center py-12">No categories yet.</p>}
         </div>
       )}
     </div>
@@ -955,8 +962,8 @@ function DealsPage({ onAdd, onOpen, onWishlist, wishlistItems }) {
     <div className="space-y-6">
       <div className="overflow-hidden rounded-[2rem] border border-rose-400/20 bg-gradient-to-br from-rose-500/10 to-orange-500/10 p-8">
         <span className="inline-flex rounded-full bg-rose-500/20 px-4 py-1 text-xs font-bold uppercase tracking-widest text-rose-300">⏰ Limited Time</span>
-        <h1 className="mt-4 text-4xl font-black text-white">Today's Best Deals</h1>
-        <p className="mt-2 text-slate-300">Grab these offers before they're gone. New deals added daily!</p>
+        <h1 className="mt-4 text-4xl font-black text-gray-900">Today's Best Deals</h1>
+        <p className="mt-2 text-gray-600">Grab these offers before they're gone. New deals added daily!</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
@@ -965,15 +972,15 @@ function DealsPage({ onAdd, onOpen, onWishlist, wishlistItems }) {
           { title:'🎁 Buy 2 Get 1',   sub:'On Fashion & Accessories',         badge:'Limited items' },
           { title:'💳 Bank Offer',    sub:'5% cashback on HDFC cards',        badge:'T&C apply' },
         ].map((o) => (
-          <div key={o.title} className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <p className="font-black text-white">{o.title}</p>
-            <p className="mt-1 text-sm text-slate-300">{o.sub}</p>
+          <div key={o.title} className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+            <p className="font-black text-gray-900">{o.title}</p>
+            <p className="mt-1 text-sm text-gray-600">{o.sub}</p>
             <span className="mt-3 inline-block rounded-full bg-cyan-500/15 px-3 py-0.5 text-xs font-semibold text-cyan-300">{o.badge}</span>
           </div>
         ))}
       </div>
-      <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6">
-        <h2 className="text-xl font-black text-white mb-5">🔥 Featured Products on Sale</h2>
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <h2 className="text-xl font-black text-gray-900 mb-5">🔥 Featured Products on Sale</h2>
         <ProductGrid fetchFn={() => api.getDeals(8)} deps={[]} onAdd={onAdd} onOpen={onOpen} onWishlist={onWishlist} wishlistItems={wishlistItems} emptyText="No deals available right now. Check back soon!" />
       </div>
     </div>
@@ -985,7 +992,7 @@ function ProductDetailPage({ productId, onAdd, onWishlist, wishlistItems }) {
   const product = data?.product;
 
   if (loading) return <Spinner />;
-  if (error || !product) return <EmptyState title="Product Not Found" text="This product could not be loaded." action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white">Back to Shop</button>} />;
+  if (error || !product) return <EmptyState title="Product Not Found" text="This product could not be loaded." action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Back to Shop</button>} />;
 
   const palette = paletteFor(product);
   const primaryImage = product.images?.find((i) => i.is_primary) || product.images?.[0];
@@ -993,9 +1000,9 @@ function ProductDetailPage({ productId, onAdd, onWishlist, wishlistItems }) {
 
   return (
     <div className="space-y-6">
-      <button onClick={() => navigate('/products')} className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition">← Back to Products</button>
+      <button onClick={() => navigate('/products')} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition">← Back to Products</button>
       <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className={`rounded-[1.75rem] border border-white/10 bg-gradient-to-br ${palette[0]} p-6 shadow-[0_20px_70px_rgba(2,6,23,0.35)] overflow-hidden`}>
+        <div className={`rounded-3xl border border-gray-200 bg-gradient-to-br ${palette[0]} p-6 shadow-sm overflow-hidden`}>
           <div className={`h-full rounded-[1.5rem] bg-gradient-to-br ${palette[1]} p-8 relative min-h-72`}>
             {primaryImage && (
               <img src={primaryImage.image_url} alt={primaryImage.alt_text || product.product_name}
@@ -1003,44 +1010,44 @@ function ProductDetailPage({ productId, onAdd, onWishlist, wishlistItems }) {
                 onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             )}
             <div className="relative flex h-full flex-col justify-between">
-              <span className="inline-flex w-fit rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white backdrop-blur">
+              <span className="inline-flex w-fit rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-gray-900 backdrop-blur">
                 {product.stock_quantity > 0 ? 'In Stock' : 'Out of Stock'}
               </span>
               <div className="mt-8">
-                <p className="text-sm uppercase tracking-[0.25em] text-white/60">{product.categories?.[0]?.category_name || 'Product'}</p>
-                <h1 className="mt-2 text-4xl font-black text-white">{product.product_name}</h1>
-                <p className="mt-4 max-w-xl text-sm leading-7 text-white/85 md:text-base">{product.description}</p>
+                <p className="text-sm uppercase tracking-[0.25em] text-gray-900/60">{product.categories?.[0]?.category_name || 'Product'}</p>
+                <h1 className="mt-2 text-4xl font-black text-gray-900">{product.product_name}</h1>
+                <p className="mt-4 max-w-xl text-sm leading-7 text-gray-900/85 md:text-base">{product.description}</p>
               </div>
             </div>
           </div>
         </div>
-        <div className="space-y-5 rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.35)]">
+        <div className="space-y-5 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-baseline gap-3">
-            <span className="text-4xl font-black text-white">{formatINR(product.price)}</span>
-            <span className="text-sm text-slate-500">{product.currency_code}</span>
+            <span className="text-4xl font-black text-gray-900">{formatINR(product.price)}</span>
+            <span className="text-sm text-gray-500">{product.currency_code}</span>
           </div>
           <p className={`text-sm ${product.stock_quantity > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
             {product.stock_quantity > 0 ? `✓ ${product.stock_quantity} units available` : '✗ Out of stock'}
           </p>
           <div className="flex flex-col gap-3 pt-2">
             <button onClick={() => { onAdd(product); navigate('/cart'); }} disabled={product.stock_quantity === 0}
-              className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-cyan-950/40 transition hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed">
+              className="w-full rounded-2xl bg-black px-5 py-3.5 text-sm font-bold text-gray-900 shadow-lg shadow-gray-400/20 transition hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed">
               🛒 Buy Now
             </button>
             <button onClick={() => onAdd(product)} disabled={product.stock_quantity === 0}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-5 py-3.5 text-sm font-bold text-white transition hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed">
+              className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-3.5 text-sm font-bold text-gray-900 transition hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
               Add to Cart
             </button>
             <button onClick={() => onWishlist(product, wi?.wishlist_item_id)}
-              className={`w-full rounded-2xl border px-5 py-3 text-sm font-semibold transition ${wi ? 'border-rose-400/30 bg-rose-500/10 text-rose-200' : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'}`}>
+              className={`w-full rounded-2xl border px-5 py-3 text-sm font-semibold transition ${wi ? 'border-rose-400/30 bg-rose-500/10 text-rose-200' : 'border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100'}`}>
               {wi ? '♥ Saved to Wishlist' : '♡ Add to Wishlist'}
             </button>
           </div>
           <div className="grid gap-2 pt-2">
             {[['🚚','Free Delivery','On orders above ₹999'],['↩️','10-Day Easy Returns','No questions asked'],['🔒','100% Secure Payment','SSL encrypted checkout']].map(([ic, t, s]) => (
-              <div key={t} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5">
+              <div key={i} className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5">
                 <span className="text-lg">{ic}</span>
-                <div><p className="text-xs font-bold text-white">{t}</p><p className="text-xs text-slate-400">{s}</p></div>
+                <div><p className="text-xs font-bold text-gray-900">{t}</p><p className="text-xs text-gray-500">{s}</p></div>
               </div>
             ))}
           </div>
@@ -1053,27 +1060,27 @@ function ProductDetailPage({ productId, onAdd, onWishlist, wishlistItems }) {
 function LoginPage({ onLogin }) {
   return (
     <div className="space-y-6">
-      <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6">
-        <h1 className="text-2xl font-black text-white">Welcome Back</h1>
-        <p className="mt-1 text-sm text-slate-400">Sign in to continue shopping and track your orders.</p>
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <h1 className="text-2xl font-black text-gray-900">Welcome Back</h1>
+        <p className="mt-1 text-sm text-gray-500">Sign in to continue shopping and track your orders.</p>
       </div>
       <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
-        <form onSubmit={onLogin} className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6 space-y-4 shadow-[0_20px_70px_rgba(2,6,23,0.35)]">
+        <form onSubmit={onLogin} className="rounded-3xl border border-gray-200 bg-white p-6 space-y-4 shadow-sm">
           <Input name="email" label="Email Address" type="email" placeholder="you@example.com" required />
           <Input name="password" label="Password" type="password" placeholder="Enter your password" required />
           <div className="flex flex-wrap gap-3 pt-2">
-            <button className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-cyan-950/40 hover:brightness-110 transition">Sign In</button>
-            <button type="button" onClick={() => navigate('/register')} className="rounded-2xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-bold text-white hover:bg-white/10 transition">Create Account</button>
+            <button className="rounded-2xl bg-black px-6 py-3 text-sm font-bold text-gray-900 shadow-lg shadow-gray-400/20 hover:brightness-110 transition">Sign In</button>
+            <button type="button" onClick={() => navigate('/register')} className="rounded-2xl border border-gray-200 bg-gray-50 px-6 py-3 text-sm font-bold text-gray-900 hover:bg-gray-100 transition">Create Account</button>
           </div>
-          <p className="text-xs text-slate-500 pt-1">Register first, then verify your email to sign in. Email verification token will be shown in the server console (dev mode).</p>
+          <p className="text-xs text-gray-500 pt-1">Register first, then verify your email to sign in. Email verification token will be shown in the server console (dev mode).</p>
         </form>
-        <aside className="rounded-[1.75rem] border border-white/10 bg-gradient-to-br from-slate-950/80 to-slate-900/50 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.35)]">
+        <aside className="rounded-3xl border border-gray-200 bg-gradient-to-br from-slate-950/80 to-slate-900/50 p-6 shadow-sm">
           <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">Why Shop with Us?</p>
           <div className="mt-5 space-y-3">
             {[['🔒','Secure Checkout','All payments are SSL encrypted and safe.'],['🚚','Fast Delivery','Get your orders in 2–5 business days.'],['↩️','Easy Returns','Hassle-free 10-day return policy.'],['💬','24/7 Support','Always here via chat or call.']].map(([ic, t, d]) => (
-              <div key={t} className="flex gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div key={i} className="flex gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-4">
                 <span className="text-xl">{ic}</span>
-                <div><p className="font-semibold text-white text-sm">{t}</p><p className="mt-0.5 text-xs text-slate-400">{d}</p></div>
+                <div><p className="font-semibold text-gray-900 text-sm">{t}</p><p className="mt-0.5 text-xs text-gray-500">{d}</p></div>
               </div>
             ))}
           </div>
@@ -1086,27 +1093,27 @@ function LoginPage({ onLogin }) {
 function RegisterPage({ onRegister }) {
   return (
     <div className="space-y-6">
-      <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6">
-        <h1 className="text-2xl font-black text-white">Create Your Account</h1>
-        <p className="mt-1 text-sm text-slate-400">Join thousands of happy shoppers. Sign up in seconds.</p>
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <h1 className="text-2xl font-black text-gray-900">Create Your Account</h1>
+        <p className="mt-1 text-sm text-gray-500">Join thousands of happy shoppers. Sign up in seconds.</p>
       </div>
-      <form onSubmit={onRegister} className="grid gap-6 rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.35)] lg:grid-cols-[1fr_0.8fr]">
+      <form onSubmit={onRegister} className="grid gap-6 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm lg:grid-cols-[1fr_0.8fr]">
         <div className="grid gap-4 sm:grid-cols-2">
           <Input name="first_name" label="First Name" placeholder="Rahul" required />
           <Input name="last_name" label="Last Name" placeholder="Sharma" required />
           <Input name="email" label="Email Address" type="email" placeholder="you@example.com" required />
           <Input name="password" label="Password" type="password" placeholder="Min. 8 characters" required />
         </div>
-        <div className="flex flex-col justify-between gap-4 rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+        <div className="flex flex-col justify-between gap-4 rounded-[1.5rem] border border-gray-200 bg-gray-50 p-5">
           <div>
             <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">Member Benefits</p>
-            <div className="mt-3 space-y-2 text-sm text-slate-300">
+            <div className="mt-3 space-y-2 text-sm text-gray-600">
               {['₹100 off on your first order','Early access to sales & deals','Exclusive member-only offers','Free shipping on every 3rd order'].map((b) => (
                 <div key={b} className="flex items-center gap-2"><span className="text-cyan-400">✓</span>{b}</div>
               ))}
             </div>
           </div>
-          <button className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-cyan-950/40 hover:brightness-110 transition">Create Free Account</button>
+          <button className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900 shadow-lg shadow-gray-400/20 hover:brightness-110 transition">Create Free Account</button>
         </div>
       </form>
     </div>
@@ -1117,14 +1124,14 @@ function CartPage({ cartItems, isLoggedIn, cartSubtotal, cartTax, cartShipping, 
   const cartCount = cartItems.reduce((t, i) => t + i.quantity, 0);
   return (
     <div className="space-y-6">
-      <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6">
-        <h1 className="text-2xl font-black text-white">Your Shopping Cart</h1>
-        <p className="mt-1 text-sm text-slate-400">{cartCount > 0 ? `${cartCount} item${cartCount > 1 ? 's' : ''} in your cart` : 'Your cart is empty'}</p>
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <h1 className="text-2xl font-black text-gray-900">Your Shopping Cart</h1>
+        <p className="mt-1 text-sm text-gray-500">{cartCount > 0 ? `${cartCount} item${cartCount > 1 ? 's' : ''} in your cart` : 'Your cart is empty'}</p>
       </div>
       <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
-        <div className="space-y-4 rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-5 shadow-[0_20px_70px_rgba(2,6,23,0.35)]">
+        <div className="space-y-4 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
           {cartItems.length === 0 ? (
-            <EmptyState title="Your cart is empty" text="Start exploring our collection!" action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white">Start Shopping</button>} />
+            <EmptyState title="Your cart is empty" text="Start exploring our collection!" action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Start Shopping</button>} />
           ) : cartItems.map((item) => {
             const productId = item.product_id;
             const name = item.product?.product_name || item.product_name || 'Product';
@@ -1134,36 +1141,36 @@ function CartPage({ cartItems, isLoggedIn, cartSubtotal, cartTax, cartShipping, 
             const itemId = isGuestItem ? productId : item.cart_item_id;
 
             return (
-              <div key={item.cart_item_id || item.product_id} className="flex flex-col gap-4 rounded-[1.5rem] border border-white/10 bg-white/5 p-4 md:flex-row md:items-center md:justify-between">
+              <div key={item.cart_item_id || item.product_id} className="flex flex-col gap-4 rounded-[1.5rem] border border-gray-200 bg-gray-50 p-4 md:flex-row md:items-center md:justify-between">
                 <div className={`h-14 w-14 shrink-0 rounded-2xl bg-gradient-to-br ${palette[0]}`} />
                 <div className="flex-1">
-                  <p className="font-bold text-white">{name}</p>
-                  <p className="text-sm text-slate-400">{item.product?.categories?.[0]?.category_name || ''}</p>
+                  <p className="font-bold text-gray-900">{name}</p>
+                  <p className="text-sm text-gray-500">{item.product?.categories?.[0]?.category_name || ''}</p>
                 </div>
                 {isLoggedIn ? (
                   <div className="flex items-center gap-2">
-                    <button onClick={() => onUpdate(item.cart_item_id, Math.max(1, item.quantity - 1))} className="rounded-full border border-white/10 bg-white/5 h-8 w-8 flex items-center justify-center text-white hover:bg-white/10 transition">−</button>
-                    <span className="min-w-8 text-center text-sm font-bold text-white">{item.quantity}</span>
-                    <button onClick={() => onUpdate(item.cart_item_id, item.quantity + 1)} className="rounded-full border border-white/10 bg-white/5 h-8 w-8 flex items-center justify-center text-white hover:bg-white/10 transition">+</button>
+                    <button onClick={() => onUpdate(item.cart_item_id, Math.max(1, item.quantity - 1))} className="rounded-full border border-gray-200 bg-gray-50 h-8 w-8 flex items-center justify-center text-gray-900 hover:bg-gray-100 transition">−</button>
+                    <span className="min-w-8 text-center text-sm font-bold text-gray-900">{item.quantity}</span>
+                    <button onClick={() => onUpdate(item.cart_item_id, item.quantity + 1)} className="rounded-full border border-gray-200 bg-gray-50 h-8 w-8 flex items-center justify-center text-gray-900 hover:bg-gray-100 transition">+</button>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <button onClick={() => onRemove(productId, true)} className="rounded-full border border-white/10 bg-white/5 h-8 w-8 flex items-center justify-center text-white hover:bg-white/10 transition">−</button>
-                    <span className="min-w-8 text-center text-sm font-bold text-white">{item.quantity}</span>
-                    <button onClick={() => {}} className="rounded-full border border-white/10 bg-white/5 h-8 w-8 flex items-center justify-center text-white hover:bg-white/10 transition">+</button>
+                    <button onClick={() => onRemove(productId, true)} className="rounded-full border border-gray-200 bg-gray-50 h-8 w-8 flex items-center justify-center text-gray-900 hover:bg-gray-100 transition">−</button>
+                    <span className="min-w-8 text-center text-sm font-bold text-gray-900">{item.quantity}</span>
+                    <button onClick={() => {}} className="rounded-full border border-gray-200 bg-gray-50 h-8 w-8 flex items-center justify-center text-gray-900 hover:bg-gray-100 transition">+</button>
                   </div>
                 )}
                 <div className="flex items-center gap-3">
-                  <span className="font-bold text-white">{formatINR(price * item.quantity)}</span>
+                  <span className="font-bold text-gray-900">{formatINR(price * item.quantity)}</span>
                   <button onClick={() => onRemove(isGuestItem ? productId : item.cart_item_id, isGuestItem)} className="text-sm text-rose-300 hover:text-rose-100 transition">Remove</button>
                 </div>
               </div>
             );
           })}
         </div>
-        <aside className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-5 shadow-[0_20px_70px_rgba(2,6,23,0.35)] space-y-4 self-start">
+        <aside className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm space-y-4 self-start">
           <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">Order Summary</p>
-          <div className="space-y-2 text-sm text-slate-300">
+          <div className="space-y-2 text-sm text-gray-600">
             <Row label="Subtotal" value={formatINR(cartSubtotal)} />
             <Row label="GST (5%)" value={formatINR(cartTax)} />
             <Row label={cartShipping === 0 ? 'Shipping (Free!)' : 'Shipping'} value={cartShipping === 0 ? '₹0' : formatINR(cartShipping)} />
@@ -1171,11 +1178,11 @@ function CartPage({ cartItems, isLoggedIn, cartSubtotal, cartTax, cartShipping, 
             <Row label="Total" value={formatINR(cartTotal)} strong />
           </div>
           {cartItems.length > 0 && (
-            <button onClick={() => navigate('/checkout')} className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-cyan-950/40 hover:brightness-110 transition">
+            <button onClick={() => navigate('/checkout')} className="w-full rounded-2xl bg-black px-5 py-3.5 text-sm font-bold text-gray-900 shadow-lg shadow-gray-400/20 hover:brightness-110 transition">
               Proceed to Checkout →
             </button>
           )}
-          <div className="flex items-center gap-2 justify-center"><span className="text-xs text-slate-500">🔒 Safe & Secure Checkout</span></div>
+          <div className="flex items-center gap-2 justify-center"><span className="text-xs text-gray-500">🔒 Safe & Secure Checkout</span></div>
         </aside>
       </div>
     </div>
@@ -1185,12 +1192,12 @@ function CartPage({ cartItems, isLoggedIn, cartSubtotal, cartTax, cartShipping, 
 function CheckoutPage({ cartItems, cartSubtotal, cartTax, cartShipping, cartTotal, form, setForm, isLoggedIn, onCheckout }) {
   return (
     <div className="space-y-6">
-      <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6">
-        <h1 className="text-2xl font-black text-white">Secure Checkout</h1>
-        <p className="mt-1 text-sm text-slate-400">Complete your order. Your information is always secure.</p>
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <h1 className="text-2xl font-black text-gray-900">Secure Checkout</h1>
+        <p className="mt-1 text-sm text-gray-500">Complete your order. Your information is always secure.</p>
       </div>
       <form onSubmit={onCheckout} className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="space-y-4 rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.35)]">
+        <div className="space-y-4 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
           <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">Delivery Details</p>
           <div className="grid gap-4 sm:grid-cols-2">
             <Input label="Full Name" name="name" value={form.name} onChange={(e) => setForm((c) => ({ ...c, name: e.target.value }))} placeholder="Rahul Sharma" required />
@@ -1208,9 +1215,9 @@ function CheckoutPage({ cartItems, cartSubtotal, cartTax, cartShipping, cartTota
           </div>
           {!isLoggedIn && <p className="text-xs text-amber-300">⚠️ Please sign in to complete your order.</p>}
         </div>
-        <aside className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.35)] space-y-4 self-start">
+        <aside className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm space-y-4 self-start">
           <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">Order Summary</p>
-          <div className="space-y-2 text-sm text-slate-300">
+          <div className="space-y-2 text-sm text-gray-600">
             {cartItems.map((item) => {
               const name = item.product?.product_name || item.product_name || 'Product';
               const price = parseFloat(item.unit_price || item.price || 0);
@@ -1221,10 +1228,10 @@ function CheckoutPage({ cartItems, cartSubtotal, cartTax, cartShipping, cartTota
             <Row label={cartShipping === 0 ? 'Shipping (Free!)' : 'Shipping'} value={cartShipping === 0 ? '₹0' : formatINR(cartShipping)} />
             <Row label="Total" value={formatINR(cartTotal)} strong />
           </div>
-          <button className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-cyan-950/40 hover:brightness-110 transition">
+          <button className="w-full rounded-2xl bg-black px-5 py-3.5 text-sm font-bold text-gray-900 shadow-lg shadow-gray-400/20 hover:brightness-110 transition">
             🔒 Place Order — {formatINR(cartTotal)}
           </button>
-          <p className="text-xs text-center text-slate-500">SSL encrypted. Your payment info is never stored.</p>
+          <p className="text-xs text-center text-gray-500">SSL encrypted. Your payment info is never stored.</p>
         </aside>
       </form>
     </div>
@@ -1236,20 +1243,20 @@ function ProfilePage({ authUser, cartCount, wishlistCount, onLogout }) {
   const orders = ordersData?.orders || [];
   return (
     <div className="space-y-6">
-      <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6">
-        <h1 className="text-2xl font-black text-white">My Account</h1>
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <h1 className="text-2xl font-black text-gray-900">My Account</h1>
       </div>
       <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <section className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.35)]">
+        <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 grid place-items-center text-2xl font-black text-white">
+              <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 grid place-items-center text-2xl font-black text-gray-900">
                 {(authUser?.first_name || 'U').charAt(0).toUpperCase()}
               </div>
-              <h2 className="mt-4 text-2xl font-black text-white">{authUser?.first_name} {authUser?.last_name}</h2>
-              <p className="text-sm text-slate-400">{authUser?.email}</p>
+              <h2 className="mt-4 text-2xl font-black text-gray-900">{authUser?.first_name} {authUser?.last_name}</h2>
+              <p className="text-sm text-gray-500">{authUser?.email}</p>
             </div>
-            <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200">{authUser?.role}</span>
+            <span className="rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-sm text-gray-700">{authUser?.role}</span>
           </div>
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             <StatCard label="Total Orders" value={loading ? '…' : orders.length} tone="emerald" hint="All time" />
@@ -1257,28 +1264,28 @@ function ProfilePage({ authUser, cartCount, wishlistCount, onLogout }) {
             <StatCard label="Wishlist" value={wishlistCount} tone="violet" hint="Saved items" />
           </div>
           <div className="mt-4 flex gap-2">
-            <button onClick={() => navigate('/orders')} className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10 transition">My Orders</button>
+            <button onClick={() => navigate('/orders')} className="flex-1 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 transition">My Orders</button>
             <button onClick={onLogout} className="flex-1 rounded-2xl border border-rose-400/20 bg-rose-500/10 px-4 py-2 text-sm text-rose-200 hover:bg-rose-500/20 transition">Sign Out</button>
           </div>
         </section>
-        <section className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6 shadow-[0_20px_70px_rgba(2,6,23,0.35)]">
+        <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
           <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">Recent Orders</p>
           <div className="mt-4 space-y-4">
             {loading ? <Spinner /> : orders.slice(0, 4).map((order) => (
-              <div key={order.order_id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div key={order.order_id} className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="font-bold text-white">{order.order_number}</p>
-                    <p className="text-sm text-slate-400">{formatDate(order.created_at)}</p>
+                    <p className="font-bold text-gray-900">{order.order_number}</p>
+                    <p className="text-sm text-gray-500">{formatDate(order.created_at)}</p>
                   </div>
                   <span className={`rounded-full px-3 py-1 text-xs font-semibold ${order.order_status === 'completed' ? 'bg-emerald-500/15 text-emerald-300' : 'bg-amber-500/15 text-amber-300'}`}>
                     {order.order_status}
                   </span>
                 </div>
-                <p className="mt-2 text-sm text-slate-300">{order.items.length} item(s) · {formatINR(order.total_amount)}</p>
+                <p className="mt-2 text-sm text-gray-600">{order.items.length} item(s) · {formatINR(order.total_amount)}</p>
               </div>
             ))}
-            {!loading && !orders.length && <p className="text-slate-400 text-sm">No orders yet.</p>}
+            {!loading && !orders.length && <p className="text-gray-500 text-sm">No orders yet.</p>}
           </div>
         </section>
       </div>
@@ -1291,28 +1298,28 @@ function OrdersPage() {
   const orders = data?.orders || [];
   return (
     <div className="space-y-6">
-      <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6">
-        <h1 className="text-2xl font-black text-white">My Orders</h1>
-        <p className="mt-1 text-sm text-slate-400">Track and manage all your orders.</p>
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <h1 className="text-2xl font-black text-gray-900">My Orders</h1>
+        <p className="mt-1 text-sm text-gray-500">Track and manage all your orders.</p>
       </div>
       {loading ? <Spinner /> : error ? <ErrorBanner message={error} /> : !orders.length ? (
-        <EmptyState title="No orders yet" text="Place your first order to see it here." action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white">Shop Now</button>} />
+        <EmptyState title="No orders yet" text="Place your first order to see it here." action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Shop Now</button>} />
       ) : orders.map((order) => (
-        <article key={order.order_id} className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-5 shadow-[0_20px_70px_rgba(2,6,23,0.35)]">
+        <article key={order.order_id} className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="text-lg font-black text-white">{order.order_number}</p>
-              <p className="text-sm text-slate-400">Placed on {formatDate(order.created_at)}</p>
+              <p className="text-lg font-black text-gray-900">{order.order_number}</p>
+              <p className="text-sm text-gray-500">Placed on {formatDate(order.created_at)}</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <span className={`rounded-full px-3 py-1 text-xs font-semibold ${order.order_status === 'completed' ? 'bg-emerald-500/15 text-emerald-300' : 'bg-amber-500/15 text-amber-300'}`}>{order.order_status}</span>
-              <span className="text-sm text-slate-300">{order.items.length} item(s)</span>
-              <span className="text-sm font-bold text-white">{formatINR(order.total_amount)}</span>
+              <span className="text-sm text-gray-600">{order.items.length} item(s)</span>
+              <span className="text-sm font-bold text-gray-900">{formatINR(order.total_amount)}</span>
             </div>
           </div>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {order.items.map((i) => (
-              <span key={i.order_item_id} className="rounded-full border border-white/10 bg-white/5 px-3 py-0.5 text-xs text-slate-300">
+              <span key={i.order_item_id} className="rounded-full border border-gray-200 bg-gray-50 px-3 py-0.5 text-xs text-gray-600">
                 {i.product?.product_name || 'Product'} ×{i.quantity}
               </span>
             ))}
@@ -1327,12 +1334,12 @@ function WishlistPage({ wishlistItems, onAdd, onOpen, onWishlist }) {
   const products = wishlistItems.map((wi) => wi.product).filter(Boolean);
   return (
     <div className="space-y-6">
-      <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6">
-        <h1 className="text-2xl font-black text-white">My Wishlist</h1>
-        <p className="mt-1 text-sm text-slate-400">{products.length} saved item{products.length !== 1 ? 's' : ''}</p>
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <h1 className="text-2xl font-black text-gray-900">My Wishlist</h1>
+        <p className="mt-1 text-sm text-gray-500">{products.length} saved item{products.length !== 1 ? 's' : ''}</p>
       </div>
       {!products.length ? (
-        <EmptyState title="Your Wishlist is empty" text="Save items you love for later." action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-bold text-white">Start Shopping</button>} />
+        <EmptyState title="Your Wishlist is empty" text="Save items you love for later." action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Start Shopping</button>} />
       ) : (
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {wishlistItems.map((wi) => wi.product && (
@@ -1349,10 +1356,10 @@ function AdminPage() {
   const stats = data || {};
   return (
     <div className="space-y-6">
-      <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6">
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
         <span className="inline-flex rounded-full bg-rose-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-300">Admin Only</span>
-        <h1 className="mt-3 text-2xl font-black text-white">Admin Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-400">Live business overview from the database.</p>
+        <h1 className="mt-3 text-2xl font-black text-gray-900">Admin Dashboard</h1>
+        <p className="mt-1 text-sm text-gray-500">Live business overview from the database.</p>
       </div>
       {loading ? <Spinner /> : (
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -1381,10 +1388,10 @@ function SellerPage() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-6">
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
         <span className="inline-flex rounded-full bg-amber-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-300">Seller Portal</span>
-        <h1 className="mt-3 text-2xl font-black text-white">Seller Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-400">Live inventory, orders, and sales from the database.</p>
+        <h1 className="mt-3 text-2xl font-black text-gray-900">Seller Dashboard</h1>
+        <p className="mt-1 text-sm text-gray-500">Live inventory, orders, and sales from the database.</p>
       </div>
       {loading ? <Spinner /> : (
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -1396,25 +1403,25 @@ function SellerPage() {
         </section>
       )}
       <section className="grid gap-6 lg:grid-cols-[1fr_0.95fr]">
-        <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/75 p-5">
+        <div className="rounded-3xl border border-gray-200 bg-white p-5">
           <p className="text-xs uppercase tracking-[0.22em] text-cyan-300 mb-4">Live Inventory</p>
           {productsLoading ? <Spinner /> : (
             <div className="space-y-3">
               {products.map((p) => (
-                <div key={p.product_id} className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div key={p.product_id} className="flex items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-gray-50 p-4">
                   <div>
-                    <p className="font-semibold text-white text-sm">{p.product_name}</p>
-                    <p className="text-xs text-slate-400">{p.categories?.[0]?.category_name || '—'}</p>
+                    <p className="font-semibold text-gray-900 text-sm">{p.product_name}</p>
+                    <p className="text-xs text-gray-500">{p.categories?.[0]?.category_name || '—'}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-white text-sm">{formatINR(p.price)}</p>
+                    <p className="font-bold text-gray-900 text-sm">{formatINR(p.price)}</p>
                     <p className={`text-xs ${p.stock_quantity < 20 ? 'text-rose-300' : 'text-emerald-300'}`}>
                       {p.stock_quantity} in stock {p.stock_quantity < 20 ? '⚠️' : '✓'}
                     </p>
                   </div>
                 </div>
               ))}
-              {!products.length && <p className="text-slate-400 text-sm text-center py-6">No products listed yet.</p>}
+              {!products.length && <p className="text-gray-500 text-sm text-center py-6">No products listed yet.</p>}
             </div>
           )}
         </div>

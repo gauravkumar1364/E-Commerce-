@@ -15,11 +15,8 @@ class Config:
     )
     SESSION_TIMEOUT_SECONDS = int(os.getenv('SESSION_TIMEOUT_SECONDS', '1800'))
     CSRF_TOKEN_MAX_AGE_SECONDS = int(os.getenv('CSRF_TOKEN_MAX_AGE_SECONDS', '1800'))
-    SQLALCHEMY_DATABASE_URI = (
-        os.getenv('MYSQL_URL') or 
-        os.getenv('DATABASE_URL') or 
-        'mysql+pymysql://root:password@localhost:3306/ecommerce_db'
-    ).replace('mysql://', 'mysql+pymysql://')
+    _db_url = os.getenv('MYSQL_URL') or os.getenv('DATABASE_URL') or 'mysql+pymysql://root:password@localhost:3306/ecommerce_db'
+    SQLALCHEMY_DATABASE_URI = _db_url.replace('mysql://', 'mysql+pymysql://', 1) if _db_url.startswith('mysql://') else _db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'true').lower() == 'true'
     SESSION_COOKIE_HTTPONLY = True

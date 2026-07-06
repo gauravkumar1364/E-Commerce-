@@ -5,7 +5,8 @@ from app.extensions import db
 
 # Import all models to ensure they are registered with SQLAlchemy
 from app.models.auth import Role, User, AuthSession, LoginHistory, AuditLog, SecurityEvent
-from app.models.commerce import Category, Product, ProductCategory, ProductImage, Review, Cart, CartItem, Wishlist, WishlistItem, Order, OrderItem, Payment
+from app.models.product import Category, Product, ProductImage
+from app.models.commerce import Cart, CartItem, Wishlist, WishlistItem, Order, OrderItem, Payment
 from app.models.forensics import TransactionLog, FraudDetection, EvidenceCollection
 
 def init_db():

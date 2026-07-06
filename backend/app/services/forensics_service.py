@@ -72,7 +72,7 @@ def log_transaction(user_id, order_id, payment_id, transaction_type, transaction
         currency_code=currency_code,
         gateway_reference=gateway_reference,
         risk_score=risk_score,
-        metadata=metadata,
+        transaction_metadata=metadata,
     )
     db.session.add(entry)
     return entry
@@ -120,7 +120,7 @@ def detect_fraud(user_id, order_id=None, payment_id=None, amount=None, currency_
         detection_status=detection_status,
         rule_name='heuristic-risk-scoring',
         reasons=reasons,
-        metadata=redact_sensitive_payload(payload) if payload else None,
+        detection_metadata=redact_sensitive_payload(payload) if payload else None,
     )
     db.session.add(entry)
     return entry
@@ -156,7 +156,7 @@ def record_security_event(user_id, session_id, event_type, message, severity='me
         event_status='open',
         event_message=message,
         ip_address=pack_ip_address(request.headers.get('X-Forwarded-For', request.remote_addr)),
-        metadata=metadata,
+        event_metadata=metadata,
     )
     db.session.add(entry)
     return entry

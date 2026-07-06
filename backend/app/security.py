@@ -1,6 +1,7 @@
 from collections import defaultdict, deque
 from datetime import datetime, timezone
 from html import escape
+import ipaddress
 import re
 import threading
 from uuid import uuid4
@@ -83,6 +84,16 @@ def sanitize_text_fields(payload, field_names):
         if field_name in sanitized and sanitized[field_name] is not None:
             sanitized[field_name] = sanitize_text(sanitized[field_name])
     return sanitized
+
+
+def pack_ip_address(raw_ip):
+    if not raw_ip:
+        return None
+
+    try:
+        return ipaddress.ip_address(str(raw_ip).split(',')[0].strip()).packed
+    except ValueError:
+        return None
 
 
 def build_serializer():

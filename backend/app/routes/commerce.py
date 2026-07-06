@@ -355,8 +355,6 @@ def order_tracking(order_id):
 @commerce_bp.get('/orders/<int:order_id>/invoice')
 @jwt_required()
 def order_invoice(order_id):
-        simulate_failure = str(data.get('simulate_failure', 'false')).strip().lower() in {'true', '1', 'yes', 'y'}
-        success = token.lower() not in {'fail', 'decline', 'failed'} and not simulate_failure
     user, error_response = current_user_or_error()
     if error_response is not None:
         return error_response
@@ -364,11 +362,13 @@ def order_invoice(order_id):
         order = get_user_order(user, order_id)
         invoice = build_invoice(order)
         from app.extensions import db
+
         db.session.commit()
         if request.args.get('format', '').lower() == 'text':
             return Response(invoice_as_text(invoice), mimetype='text/plain'), 200
         return jsonify({'invoice': invoice}), 200
     except ValueError as exc:
         from app.extensions import db
+
         db.session.rollback()
         return jsonify({'message': str(exc)}), 404

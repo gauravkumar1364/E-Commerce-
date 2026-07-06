@@ -211,7 +211,7 @@ def record_security_event(user_id, event_type, message, severity='medium', sessi
         event_status='open',
         event_message=message,
         ip_address=context['ip_address'],
-        metadata=metadata,
+        event_metadata=metadata,
     )
     db.session.add(entry)
     return entry

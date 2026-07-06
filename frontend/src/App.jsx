@@ -164,7 +164,7 @@ function ProductCard({ product, onAdd, onOpen, onWishlist, wishlistItemId }) {
             Details
           </button>
           <button type="button" onClick={() => onAdd(product)} disabled={product.stock_quantity === 0}
-            className="flex-1 rounded-xl bg-black px-3 py-2.5 text-sm font-bold text-gray-900 shadow-sm transition hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed">
+            className="flex-1 rounded-xl bg-black px-3 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed">
             {product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
           </button>
         </div>

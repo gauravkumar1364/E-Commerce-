@@ -1044,7 +1044,7 @@ function ProductDetailPage({ productId, onAdd, onWishlist, wishlistItems }) {
             </button>
           </div>
           <div className="grid gap-2 pt-2">
-            {[['🚚','Free Delivery','On orders above ₹999'],['↩️','10-Day Easy Returns','No questions asked'],['🔒','100% Secure Payment','SSL encrypted checkout']].map(([ic, t, s]) => (
+            {[['🚚','Free Delivery','On orders above ₹999'],['↩️','10-Day Easy Returns','No questions asked'],['🔒','100% Secure Payment','SSL encrypted checkout']].map(([ic, t, s], i) => (
               <div key={i} className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5">
                 <span className="text-lg">{ic}</span>
                 <div><p className="text-xs font-bold text-gray-900">{t}</p><p className="text-xs text-gray-500">{s}</p></div>
@@ -1077,7 +1077,7 @@ function LoginPage({ onLogin }) {
         <aside className="rounded-3xl border border-gray-200 bg-gradient-to-br from-slate-950/80 to-slate-900/50 p-6 shadow-sm">
           <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">Why Shop with Us?</p>
           <div className="mt-5 space-y-3">
-            {[['🔒','Secure Checkout','All payments are SSL encrypted and safe.'],['🚚','Fast Delivery','Get your orders in 2–5 business days.'],['↩️','Easy Returns','Hassle-free 10-day return policy.'],['💬','24/7 Support','Always here via chat or call.']].map(([ic, t, d]) => (
+            {[['🔒','Secure Checkout','All payments are SSL encrypted and safe.'],['🚚','Fast Delivery','Get your orders in 2–5 business days.'],['↩️','Easy Returns','Hassle-free 10-day return policy.'],['💬','24/7 Support','Always here via chat or call.']].map(([ic, t, d], i) => (
               <div key={i} className="flex gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-4">
                 <span className="text-xl">{ic}</span>
                 <div><p className="font-semibold text-gray-900 text-sm">{t}</p><p className="mt-0.5 text-xs text-gray-500">{d}</p></div>

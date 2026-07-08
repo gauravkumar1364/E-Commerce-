@@ -81,6 +81,45 @@ def register():
         return jsonify({'message': 'Registration failed due to a database constraint'}), 400
 
 
+@auth_bp.post('/register-seller')
+def register_seller():
+    data, error_response = parse_json_body(['first_name', 'last_name', 'email', 'password'])
+    if error_response is not None:
+        return error_response
+
+    try:
+        user = create_user_account(data, role_name='Seller', verified=False)
+        session_key = uuid4().hex
+        access_token, refresh_token = create_jwt_pair_with_session(user, session_key)
+        session = create_session(user, refresh_token, session_key)
+        verification_token = make_verification_token(user)
+        send_email(
+            'Verify your seller account',
+            user.email,
+            f'Welcome {user.first_name},\n\nYou have registered as a Seller on ShopZen.\nUse this token to verify your email:\n{verification_token}\n',
+        )
+        record_audit_log(user.user_id, 'users', user.user_id, 'register_seller', None, user.to_dict())
+        db.session.commit()
+
+        return (
+            jsonify(
+                {
+                    'message': 'Seller registration successful',
+                    'verification_required': True,
+                    'verification_token': verification_token if current_app.config.get('EXPOSE_SECURITY_TOKENS', True) else None,
+                    **auth_response_payload(user, access_token, refresh_token, session=session, verification_token=verification_token),
+                }
+            ),
+            201,
+        )
+    except ValueError as exc:
+        db.session.rollback()
+        return jsonify({'message': str(exc)}), 409
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({'message': 'Registration failed due to a database constraint'}), 400
+
+
 @auth_bp.post('/login')
 def login():
     data, error_response = parse_json_body(['email', 'password'])

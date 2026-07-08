@@ -27,7 +27,7 @@ function paletteFor(product) {
 function parseRoute() {
   const hash = window.location.hash.replace(/^#/, '') || '/';
   const [path] = hash.split('?');
-  const known = ['/login', '/register', '/products', '/cart', '/checkout', '/profile', '/orders', '/admin', '/seller', '/categories', '/deals', '/wishlist', '/admin/login', '/seller/login'];
+  const known = ['/login', '/register', '/products', '/cart', '/checkout', '/profile', '/orders', '/admin', '/seller', '/categories', '/deals', '/wishlist', '/admin/login', '/seller/login', '/seller/register'];
   if (known.includes(path)) return { path };
   if (path.startsWith('/product/')) return { path: '/product', id: path.replace('/product/', '') };
   return { path: '/' };
@@ -373,6 +373,26 @@ export default function App() {
     }
   }
 
+  async function handleSellerRegister(e) {
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    try {
+      const data = await api.registerSeller({
+        first_name: form.get('first_name'),
+        last_name: form.get('last_name'),
+        email: form.get('email'),
+        password: form.get('password'),
+      });
+      api.setToken(data.access_token);
+      api.setUserData(data.user);
+      setAuthUser(data.user);
+      showNotice(`Seller account created! Welcome, ${data.user.first_name}!`);
+      navigate('/seller');
+    } catch (err) {
+      showNotice(err.message || 'Registration failed.', 'error');
+    }
+  }
+
   function handleLogout() {
     api.setToken(null);
     api.setUserData(null);
@@ -525,6 +545,11 @@ export default function App() {
     // ══ SELLER LOGIN ══
     if (route.path === '/seller/login') {
       return <SellerLoginPage onLogin={handleLogin} />;
+    }
+
+    // ══ SELLER REGISTER ══
+    if (route.path === '/seller/register') {
+      return <SellerRegisterPage onRegister={handleSellerRegister} />;
     }
 
     // ══ REGISTER ══
@@ -1165,6 +1190,7 @@ function SellerLoginPage({ onLogin }) {
           <div className="flex flex-wrap gap-3 pt-2">
             <button className="rounded-2xl bg-amber-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-amber-400/20 hover:bg-amber-700 transition">Sign In as Seller</button>
             <button type="button" onClick={() => navigate('/login')} className="rounded-2xl border border-gray-200 bg-gray-50 px-6 py-3 text-sm font-bold text-gray-900 hover:bg-gray-100 transition">Customer Login</button>
+            <button type="button" onClick={() => navigate('/seller/register')} className="rounded-2xl border border-amber-200 bg-amber-50 px-6 py-3 text-sm font-bold text-amber-700 hover:bg-amber-100 transition">Create Seller Account</button>
           </div>
           <p className="text-xs text-gray-500 pt-1">Only users with the Seller role can access the seller dashboard.</p>
         </form>
@@ -1179,6 +1205,41 @@ function SellerLoginPage({ onLogin }) {
             ))}
           </div>
         </aside>
+      </div>
+    </div>
+  );
+}
+
+function SellerRegisterPage({ onRegister }) {
+  return (
+    <div className="space-y-6">
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <span className="inline-flex rounded-full bg-amber-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-600">Seller Portal</span>
+        <h1 className="mt-3 text-2xl font-black text-gray-900">Create Seller Account</h1>
+        <p className="mt-1 text-sm text-gray-500">Register as a seller to start listing products on ShopZen.</p>
+      </div>
+      <form onSubmit={onRegister} className="grid gap-6 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm lg:grid-cols-[1fr_0.8fr]">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Input name="first_name" label="First Name" placeholder="Rahul" required />
+          <Input name="last_name" label="Last Name" placeholder="Sharma" required />
+          <Input name="email" label="Email Address" type="email" placeholder="seller@example.com" required />
+          <Input name="password" label="Password" type="password" placeholder="Min. 8 characters" required />
+        </div>
+        <div className="flex flex-col justify-between gap-4 rounded-[1.5rem] border border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50 p-5">
+          <div>
+            <p className="text-xs uppercase tracking-[0.22em] font-bold text-amber-600">Seller Benefits</p>
+            <div className="mt-3 space-y-2 text-sm text-gray-600">
+              {['List unlimited products for free','Real-time sales analytics dashboard','Fast & reliable order management','Dedicated seller support team'].map((b) => (
+                <div key={b} className="flex items-center gap-2"><span className="text-amber-500">✓</span>{b}</div>
+              ))}
+            </div>
+          </div>
+          <button className="rounded-2xl bg-amber-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-amber-400/20 hover:bg-amber-700 transition">Create Seller Account</button>
+        </div>
+      </form>
+      <div className="flex flex-wrap justify-center gap-3">
+        <button onClick={() => navigate('/seller/login')} className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 hover:bg-amber-100 transition">Already a Seller? Sign In</button>
+        <button onClick={() => navigate('/login')} className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition">Customer Login</button>
       </div>
     </div>
   );

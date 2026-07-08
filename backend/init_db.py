@@ -39,5 +39,26 @@ def init_db():
         else:
             print("Database already contains data. Skipping seed.")
 
+        # Create default admin if none exists
+        admin_role = Role.query.filter_by(role_name='Admin').first()
+        if admin_role:
+            admin_exists = User.query.filter_by(role_id=admin_role.role_id).first()
+            if not admin_exists:
+                from datetime import datetime, timezone
+                admin = User(
+                    role=admin_role,
+                    first_name='Admin',
+                    last_name='ShopZen',
+                    email='admin@shopzen.in',
+                    is_active=True,
+                    email_verified_at=datetime.now(timezone.utc),
+                )
+                admin.set_password('Admin@123')
+                db.session.add(admin)
+                db.session.commit()
+                print('Default admin user created: admin@shopzen.in / Admin@123')
+            else:
+                print('Admin user already exists. Skipping.')
+
 if __name__ == '__main__':
     init_db()

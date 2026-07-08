@@ -65,6 +65,9 @@ export const login = (email, password) =>
 export const register = (data) =>
   apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(data) });
 
+export const registerSeller = (data) =>
+  apiFetch('/auth/register-seller', { method: 'POST', body: JSON.stringify(data) });
+
 export const getMe = () => apiFetch('/auth/me');
 
 // ─── Cart endpoints (require JWT) ───────────────────────────────────────────

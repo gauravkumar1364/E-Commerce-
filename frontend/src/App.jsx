@@ -344,6 +344,7 @@ export default function App() {
     try {
       const data = await api.login(form.get('email'), form.get('password'));
       api.setToken(data.access_token);
+      api.setCsrfToken(data.csrf_token);
       api.setUserData(data.user);
       setAuthUser(data.user);
       showNotice(`Welcome back, ${data.user.first_name}!`);
@@ -364,6 +365,7 @@ export default function App() {
         password: form.get('password'),
       });
       api.setToken(data.access_token);
+      api.setCsrfToken(data.csrf_token);
       api.setUserData(data.user);
       setAuthUser(data.user);
       showNotice(`Account created! Welcome to ShopZen, ${data.user.first_name}!`);
@@ -384,6 +386,7 @@ export default function App() {
         password: form.get('password'),
       });
       api.setToken(data.access_token);
+      api.setCsrfToken(data.csrf_token);
       api.setUserData(data.user);
       setAuthUser(data.user);
       showNotice(`Seller account created! Welcome, ${data.user.first_name}!`);
@@ -395,6 +398,7 @@ export default function App() {
 
   function handleLogout() {
     api.setToken(null);
+    api.setCsrfToken(null);
     api.setUserData(null);
     setAuthUser(null);
     setLiveCart(null);

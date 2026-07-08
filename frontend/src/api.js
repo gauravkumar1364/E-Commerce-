@@ -10,6 +10,15 @@ export function setToken(token) {
   else localStorage.removeItem('shopzen_access_token');
 }
 
+export function setCsrfToken(token) {
+  if (token) localStorage.setItem('shopzen_csrf_token', token);
+  else localStorage.removeItem('shopzen_csrf_token');
+}
+
+export function getCsrfToken() {
+  return localStorage.getItem('shopzen_csrf_token');
+}
+
 export function setUserData(user) {
   if (user) localStorage.setItem('shopzen_user', JSON.stringify(user));
   else localStorage.removeItem('shopzen_user');
@@ -26,12 +35,24 @@ export function getUserData() {
 
 async function apiFetch(path, options = {}) {
   const token = getToken();
+  const csrf = getCsrfToken();
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
   if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (csrf) headers['X-CSRF-Token'] = csrf;
 
   const res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
   const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw { status: res.status, message: json.message || 'Request failed', data: json };
+  if (!res.ok) {
+    if (res.status === 401 || res.status === 403) {
+      if (json.message === 'Session timed out' || json.message === 'Session is no longer valid' || json.message === 'Missing CSRF token' || json.message === 'Invalid or expired CSRF token') {
+        setToken(null);
+        setCsrfToken(null);
+        setUserData(null);
+        window.location.hash = '/login';
+      }
+    }
+    throw { status: res.status, message: json.message || 'Request failed', data: json };
+  }
   return json;
 }
 

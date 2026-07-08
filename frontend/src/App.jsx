@@ -27,7 +27,7 @@ function paletteFor(product) {
 function parseRoute() {
   const hash = window.location.hash.replace(/^#/, '') || '/';
   const [path] = hash.split('?');
-  const known = ['/login', '/register', '/products', '/cart', '/checkout', '/profile', '/orders', '/admin', '/seller', '/categories', '/deals', '/wishlist'];
+  const known = ['/login', '/register', '/products', '/cart', '/checkout', '/profile', '/orders', '/admin', '/seller', '/categories', '/deals', '/wishlist', '/admin/login', '/seller/login'];
   if (known.includes(path)) return { path };
   if (path.startsWith('/product/')) return { path: '/product', id: path.replace('/product/', '') };
   return { path: '/' };
@@ -517,6 +517,16 @@ export default function App() {
       return <LoginPage onLogin={handleLogin} />;
     }
 
+    // ══ ADMIN LOGIN ══
+    if (route.path === '/admin/login') {
+      return <AdminLoginPage onLogin={handleLogin} />;
+    }
+
+    // ══ SELLER LOGIN ══
+    if (route.path === '/seller/login') {
+      return <SellerLoginPage onLogin={handleLogin} />;
+    }
+
     // ══ REGISTER ══
     if (route.path === '/register') {
       return <RegisterPage onRegister={handleRegister} />;
@@ -580,13 +590,13 @@ export default function App() {
 
     // ══ ADMIN ══
     if (route.path === '/admin') {
-      if (authUser?.role !== 'Admin') return <EmptyState title="Access Restricted" text="Admin credentials required." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Sign In</button>} />;
+      if (authUser?.role !== 'Admin') return <EmptyState title="Access Restricted" text="Admin credentials required." action={<button onClick={() => navigate('/admin/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Admin Sign In</button>} />;
       return <AdminPage />;
     }
 
     // ══ SELLER ══
     if (route.path === '/seller') {
-      if (!['Admin', 'Seller'].includes(authUser?.role)) return <EmptyState title="Access Restricted" text="Seller credentials required." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Sign In as Seller</button>} />;
+      if (!['Admin', 'Seller'].includes(authUser?.role)) return <EmptyState title="Access Restricted" text="Seller credentials required." action={<button onClick={() => navigate('/seller/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Seller Sign In</button>} />;
       return <SellerPage />;
     }
 
@@ -635,12 +645,24 @@ export default function App() {
                 )}
               </button>
               {authUser ? (
-                <button onClick={() => navigate('/profile')} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-semibold text-black hover:bg-blue-100 transition">
-                  <span className="h-5 w-5 rounded-full bg-black grid place-items-center text-[10px] font-black text-white">
-                    {(authUser.first_name || 'U').charAt(0).toUpperCase()}
-                  </span>
-                  {authUser.first_name}
-                </button>
+                <>
+                  {authUser.role === 'Admin' && (
+                    <button onClick={() => navigate('/admin')} className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${route.path === '/admin' ? 'bg-rose-600 text-white' : 'border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100'}`}>
+                      🛡️ Admin
+                    </button>
+                  )}
+                  {['Admin', 'Seller'].includes(authUser.role) && (
+                    <button onClick={() => navigate('/seller')} className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${route.path === '/seller' ? 'bg-amber-600 text-white' : 'border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'}`}>
+                      📦 Seller
+                    </button>
+                  )}
+                  <button onClick={() => navigate('/profile')} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-semibold text-black hover:bg-blue-100 transition">
+                    <span className="h-5 w-5 rounded-full bg-black grid place-items-center text-[10px] font-black text-white">
+                      {(authUser.first_name || 'U').charAt(0).toUpperCase()}
+                    </span>
+                    {authUser.first_name}
+                  </button>
+                </>
               ) : (
                 <button onClick={() => navigate('/login')} className="rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-semibold text-black hover:bg-blue-100 transition">
                   Sign In
@@ -1079,6 +1101,78 @@ function LoginPage({ onLogin }) {
           <div className="mt-5 space-y-3">
             {[['🔒','Secure Checkout','All payments are SSL encrypted and safe.'],['🚚','Fast Delivery','Get your orders in 2–5 business days.'],['↩️','Easy Returns','Hassle-free 10-day return policy.'],['💬','24/7 Support','Always here via chat or call.']].map(([ic, t, d], i) => (
               <div key={i} className="flex gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                <span className="text-xl">{ic}</span>
+                <div><p className="font-semibold text-gray-900 text-sm">{t}</p><p className="mt-0.5 text-xs text-gray-500">{d}</p></div>
+              </div>
+            ))}
+          </div>
+        </aside>
+      </div>
+      <div className="flex flex-wrap justify-center gap-3">
+        <button onClick={() => navigate('/admin/login')} className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100 transition">🛡️ Admin Login</button>
+        <button onClick={() => navigate('/seller/login')} className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 hover:bg-amber-100 transition">📦 Seller Login</button>
+      </div>
+    </div>
+  );
+}
+
+function AdminLoginPage({ onLogin }) {
+  return (
+    <div className="space-y-6">
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <span className="inline-flex rounded-full bg-rose-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-600">Admin Portal</span>
+        <h1 className="mt-3 text-2xl font-black text-gray-900">Admin Sign In</h1>
+        <p className="mt-1 text-sm text-gray-500">Access the admin dashboard to manage your store.</p>
+      </div>
+      <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
+        <form onSubmit={onLogin} className="rounded-3xl border border-gray-200 bg-white p-6 space-y-4 shadow-sm">
+          <Input name="email" label="Admin Email" type="email" placeholder="admin@shopzen.in" required />
+          <Input name="password" label="Password" type="password" placeholder="Enter admin password" required />
+          <div className="flex flex-wrap gap-3 pt-2">
+            <button className="rounded-2xl bg-rose-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-rose-400/20 hover:bg-rose-700 transition">Sign In as Admin</button>
+            <button type="button" onClick={() => navigate('/login')} className="rounded-2xl border border-gray-200 bg-gray-50 px-6 py-3 text-sm font-bold text-gray-900 hover:bg-gray-100 transition">Customer Login</button>
+          </div>
+          <p className="text-xs text-gray-500 pt-1">Only users with the Admin role can access the admin dashboard.</p>
+        </form>
+        <aside className="rounded-3xl border border-rose-200 bg-gradient-to-br from-rose-50 to-orange-50 p-6 shadow-sm">
+          <p className="text-xs uppercase tracking-[0.22em] font-bold text-rose-600">Admin Features</p>
+          <div className="mt-5 space-y-3">
+            {[['📊','Business Analytics','View real-time revenue, orders, and customer metrics.'],['👥','User Management','Manage customer accounts and roles.'],['🛡️','Security Monitoring','Track login attempts and security alerts.'],['📦','Inventory Control','Full oversight of product catalog and stock.']].map(([ic, t, d], i) => (
+              <div key={i} className="flex gap-3 rounded-2xl border border-rose-100 bg-white p-4">
+                <span className="text-xl">{ic}</span>
+                <div><p className="font-semibold text-gray-900 text-sm">{t}</p><p className="mt-0.5 text-xs text-gray-500">{d}</p></div>
+              </div>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+function SellerLoginPage({ onLogin }) {
+  return (
+    <div className="space-y-6">
+      <div className="rounded-3xl border border-gray-200 bg-white p-6">
+        <span className="inline-flex rounded-full bg-amber-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-600">Seller Portal</span>
+        <h1 className="mt-3 text-2xl font-black text-gray-900">Seller Sign In</h1>
+        <p className="mt-1 text-sm text-gray-500">Access your seller dashboard to manage products and orders.</p>
+      </div>
+      <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
+        <form onSubmit={onLogin} className="rounded-3xl border border-gray-200 bg-white p-6 space-y-4 shadow-sm">
+          <Input name="email" label="Seller Email" type="email" placeholder="seller@shopzen.in" required />
+          <Input name="password" label="Password" type="password" placeholder="Enter seller password" required />
+          <div className="flex flex-wrap gap-3 pt-2">
+            <button className="rounded-2xl bg-amber-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-amber-400/20 hover:bg-amber-700 transition">Sign In as Seller</button>
+            <button type="button" onClick={() => navigate('/login')} className="rounded-2xl border border-gray-200 bg-gray-50 px-6 py-3 text-sm font-bold text-gray-900 hover:bg-gray-100 transition">Customer Login</button>
+          </div>
+          <p className="text-xs text-gray-500 pt-1">Only users with the Seller role can access the seller dashboard.</p>
+        </form>
+        <aside className="rounded-3xl border border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50 p-6 shadow-sm">
+          <p className="text-xs uppercase tracking-[0.22em] font-bold text-amber-600">Seller Features</p>
+          <div className="mt-5 space-y-3">
+            {[['📦','Product Management','Add, edit, and manage your product listings.'],['📈','Sales Analytics','Track revenue, orders, and growth trends.'],['🚚','Order Fulfillment','Process and ship customer orders efficiently.'],['📋','Inventory Tracking','Monitor stock levels and get low-stock alerts.']].map(([ic, t, d], i) => (
+              <div key={i} className="flex gap-3 rounded-2xl border border-amber-100 bg-white p-4">
                 <span className="text-xl">{ic}</span>
                 <div><p className="font-semibold text-gray-900 text-sm">{t}</p><p className="mt-0.5 text-xs text-gray-500">{d}</p></div>
               </div>

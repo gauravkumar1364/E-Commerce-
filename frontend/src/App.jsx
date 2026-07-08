@@ -574,29 +574,29 @@ export default function App() {
 
     // ══ ORDERS ══
     if (route.path === '/orders') {
-      if (!isLoggedIn) return <EmptyState title="Sign In Required" text="Please sign in to view your orders." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Sign In</button>} />;
+      if (!isLoggedIn) return <EmptyState title="Sign In Required" text="Please sign in to view your orders." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Sign In</button>} />;
       return <OrdersPage />;
     }
 
     // ══ ADMIN ══
     if (route.path === '/admin') {
-      if (authUser?.role !== 'Admin') return <EmptyState title="Access Restricted" text="Admin credentials required." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Sign In</button>} />;
+      if (authUser?.role !== 'Admin') return <EmptyState title="Access Restricted" text="Admin credentials required." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Sign In</button>} />;
       return <AdminPage />;
     }
 
     // ══ SELLER ══
     if (route.path === '/seller') {
-      if (!['Admin', 'Seller'].includes(authUser?.role)) return <EmptyState title="Access Restricted" text="Seller credentials required." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Sign In as Seller</button>} />;
+      if (!['Admin', 'Seller'].includes(authUser?.role)) return <EmptyState title="Access Restricted" text="Seller credentials required." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Sign In as Seller</button>} />;
       return <SellerPage />;
     }
 
     // ══ WISHLIST ══
     if (route.path === '/wishlist') {
-      if (!isLoggedIn) return <EmptyState title="Sign In Required" text="Please sign in to view your Wishlist." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Sign In</button>} />;
+      if (!isLoggedIn) return <EmptyState title="Sign In Required" text="Please sign in to view your Wishlist." action={<button onClick={() => navigate('/login')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Sign In</button>} />;
       return <WishlistPage wishlistItems={wishlistItems} onAdd={handleAddToCart} onOpen={goToProduct} onWishlist={handleWishlist} />;
     }
 
-    return <EmptyState title="Page Not Found" text="This page doesn't exist." action={<button onClick={() => navigate('/')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Go Home</button>} />;
+    return <EmptyState title="Page Not Found" text="This page doesn't exist." action={<button onClick={() => navigate('/')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Go Home</button>} />;
   }
 
   return (
@@ -668,7 +668,7 @@ export default function App() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-4">
               <button onClick={() => navigate('/')} className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-xl bg-black text-base font-black text-gray-900 shadow-md shadow-gray-400/20">S</span>
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-black text-base font-black text-white shadow-md shadow-gray-400/20">S</span>
                 <span className="font-black text-gray-900 text-lg">ShopZen</span>
               </button>
               <p className="text-sm text-gray-600 leading-6">Your one-stop destination for premium products at unbeatable prices.</p>
@@ -839,7 +839,7 @@ function HomePage({ onAdd, onOpen, onWishlist, wishlistItems }) {
         <form className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center" onSubmit={(e) => e.preventDefault()}>
           <input type="email" placeholder="Enter your email address" required
             className="w-full max-w-sm rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-900 placeholder:text-gray-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm" />
-          <button className="rounded-xl bg-black px-6 py-3 text-sm font-bold text-gray-900 shadow-md shadow-gray-400/20 transition hover:bg-gray-900">Subscribe</button>
+          <button className="rounded-xl bg-black px-6 py-3 text-sm font-bold text-white shadow-md shadow-gray-400/20 transition hover:bg-gray-900">Subscribe</button>
         </form>
       </section>
     </div>
@@ -914,7 +914,7 @@ function ShopPage({ search, setSearch, category, setCategory, sort, setSort, sor
         </Select>
       </div>
       {loading ? <Spinner /> : error ? <ErrorBanner message={error} /> : !products.length ? (
-        <EmptyState title="No products found" text="Try adjusting your search or category filter." action={<button onClick={() => { setSearch(''); setCategory(''); }} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Clear Filters</button>} />
+        <EmptyState title="No products found" text="Try adjusting your search or category filter." action={<button onClick={() => { setSearch(''); setCategory(''); }} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Clear Filters</button>} />
       ) : (
         <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {products.map((p) => {
@@ -992,7 +992,7 @@ function ProductDetailPage({ productId, onAdd, onWishlist, wishlistItems }) {
   const product = data?.product;
 
   if (loading) return <Spinner />;
-  if (error || !product) return <EmptyState title="Product Not Found" text="This product could not be loaded." action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Back to Shop</button>} />;
+  if (error || !product) return <EmptyState title="Product Not Found" text="This product could not be loaded." action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Back to Shop</button>} />;
 
   const palette = paletteFor(product);
   const primaryImage = product.images?.find((i) => i.is_primary) || product.images?.[0];
@@ -1031,7 +1031,7 @@ function ProductDetailPage({ productId, onAdd, onWishlist, wishlistItems }) {
           </p>
           <div className="flex flex-col gap-3 pt-2">
             <button onClick={() => { onAdd(product); navigate('/cart'); }} disabled={product.stock_quantity === 0}
-              className="w-full rounded-2xl bg-black px-5 py-3.5 text-sm font-bold text-gray-900 shadow-lg shadow-gray-400/20 transition hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed">
+              className="w-full rounded-2xl bg-black px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-gray-400/20 transition hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed">
               🛒 Buy Now
             </button>
             <button onClick={() => onAdd(product)} disabled={product.stock_quantity === 0}
@@ -1069,7 +1069,7 @@ function LoginPage({ onLogin }) {
           <Input name="email" label="Email Address" type="email" placeholder="you@example.com" required />
           <Input name="password" label="Password" type="password" placeholder="Enter your password" required />
           <div className="flex flex-wrap gap-3 pt-2">
-            <button className="rounded-2xl bg-black px-6 py-3 text-sm font-bold text-gray-900 shadow-lg shadow-gray-400/20 hover:brightness-110 transition">Sign In</button>
+            <button className="rounded-2xl bg-black px-6 py-3 text-sm font-bold text-white shadow-lg shadow-gray-400/20 hover:brightness-110 transition">Sign In</button>
             <button type="button" onClick={() => navigate('/register')} className="rounded-2xl border border-gray-200 bg-gray-50 px-6 py-3 text-sm font-bold text-gray-900 hover:bg-gray-100 transition">Create Account</button>
           </div>
           <p className="text-xs text-gray-500 pt-1">Register first, then verify your email to sign in. Email verification token will be shown in the server console (dev mode).</p>
@@ -1113,7 +1113,7 @@ function RegisterPage({ onRegister }) {
               ))}
             </div>
           </div>
-          <button className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900 shadow-lg shadow-gray-400/20 hover:brightness-110 transition">Create Free Account</button>
+          <button className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white shadow-lg shadow-gray-400/20 hover:brightness-110 transition">Create Free Account</button>
         </div>
       </form>
     </div>
@@ -1131,7 +1131,7 @@ function CartPage({ cartItems, isLoggedIn, cartSubtotal, cartTax, cartShipping, 
       <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
         <div className="space-y-4 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
           {cartItems.length === 0 ? (
-            <EmptyState title="Your cart is empty" text="Start exploring our collection!" action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Start Shopping</button>} />
+            <EmptyState title="Your cart is empty" text="Start exploring our collection!" action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Start Shopping</button>} />
           ) : cartItems.map((item) => {
             const productId = item.product_id;
             const name = item.product?.product_name || item.product_name || 'Product';
@@ -1178,7 +1178,7 @@ function CartPage({ cartItems, isLoggedIn, cartSubtotal, cartTax, cartShipping, 
             <Row label="Total" value={formatINR(cartTotal)} strong />
           </div>
           {cartItems.length > 0 && (
-            <button onClick={() => navigate('/checkout')} className="w-full rounded-2xl bg-black px-5 py-3.5 text-sm font-bold text-gray-900 shadow-lg shadow-gray-400/20 hover:brightness-110 transition">
+            <button onClick={() => navigate('/checkout')} className="w-full rounded-2xl bg-black px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-gray-400/20 hover:brightness-110 transition">
               Proceed to Checkout →
             </button>
           )}
@@ -1228,7 +1228,7 @@ function CheckoutPage({ cartItems, cartSubtotal, cartTax, cartShipping, cartTota
             <Row label={cartShipping === 0 ? 'Shipping (Free!)' : 'Shipping'} value={cartShipping === 0 ? '₹0' : formatINR(cartShipping)} />
             <Row label="Total" value={formatINR(cartTotal)} strong />
           </div>
-          <button className="w-full rounded-2xl bg-black px-5 py-3.5 text-sm font-bold text-gray-900 shadow-lg shadow-gray-400/20 hover:brightness-110 transition">
+          <button className="w-full rounded-2xl bg-black px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-gray-400/20 hover:brightness-110 transition">
             🔒 Place Order — {formatINR(cartTotal)}
           </button>
           <p className="text-xs text-center text-gray-500">SSL encrypted. Your payment info is never stored.</p>
@@ -1250,7 +1250,7 @@ function ProfilePage({ authUser, cartCount, wishlistCount, onLogout }) {
         <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 grid place-items-center text-2xl font-black text-gray-900">
+              <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 grid place-items-center text-2xl font-black text-white">
                 {(authUser?.first_name || 'U').charAt(0).toUpperCase()}
               </div>
               <h2 className="mt-4 text-2xl font-black text-gray-900">{authUser?.first_name} {authUser?.last_name}</h2>
@@ -1303,7 +1303,7 @@ function OrdersPage() {
         <p className="mt-1 text-sm text-gray-500">Track and manage all your orders.</p>
       </div>
       {loading ? <Spinner /> : error ? <ErrorBanner message={error} /> : !orders.length ? (
-        <EmptyState title="No orders yet" text="Place your first order to see it here." action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Shop Now</button>} />
+        <EmptyState title="No orders yet" text="Place your first order to see it here." action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Shop Now</button>} />
       ) : orders.map((order) => (
         <article key={order.order_id} className="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -1339,7 +1339,7 @@ function WishlistPage({ wishlistItems, onAdd, onOpen, onWishlist }) {
         <p className="mt-1 text-sm text-gray-500">{products.length} saved item{products.length !== 1 ? 's' : ''}</p>
       </div>
       {!products.length ? (
-        <EmptyState title="Your Wishlist is empty" text="Save items you love for later." action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-gray-900">Start Shopping</button>} />
+        <EmptyState title="Your Wishlist is empty" text="Save items you love for later." action={<button onClick={() => navigate('/products')} className="rounded-2xl bg-black px-5 py-3 text-sm font-bold text-white">Start Shopping</button>} />
       ) : (
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {wishlistItems.map((wi) => wi.product && (
